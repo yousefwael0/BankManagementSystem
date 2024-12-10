@@ -15,8 +15,8 @@ public abstract class User {
         this.userId=counter;
         this.setFirstName(firstName);
         this.setLastName(lastName);
-        this.username=username;
-        this.password=password;
+        this.setUsername(username);
+        this.setPassword(password);
         counter++;
     }
     public User(){
@@ -48,6 +48,9 @@ public abstract class User {
         return username;
     }
     public void setUsername(String username) {
+        if (username == null || username.trim().isEmpty()) {
+            throw new IllegalArgumentException("First name cannot be null or empty.");
+        }
         this.username = username;
     }
 
@@ -55,6 +58,9 @@ public abstract class User {
         return password;
     }
     public void setPassword(String password) {
+        if (password == null || password.trim().isEmpty()) {
+            throw new IllegalArgumentException("First name cannot be null or empty.");
+        }
         this.password = password;
     }
 
