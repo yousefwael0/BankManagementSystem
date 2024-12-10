@@ -1,35 +1,47 @@
 package models.user;
 
-public class Employee extends User {
-    private String address;
-    private String position;
-    private String graduatedCollege;
-    private int yearOfGraduation;
-    private String totalGrade;
+import java.util.List;
+import models.account.Transaction;
 
-    public Employee(int ID, String firstName, String lastName, String username, String password, String address,
-                    String position, String graduatedCollege, int yearOfGraduation, String totalGrade) {
+public class Admin extends User {
+
+    public Admin(int ID, String firstName, String lastName, String username, String password) {
         super(ID, firstName, lastName, username, password);
-        this.address = address;
-        this.position = position;
-        this.graduatedCollege = graduatedCollege;
-        this.yearOfGraduation = yearOfGraduation;
-        this.totalGrade = totalGrade;
     }
 
-    // Getters and setters for attributes
-    public void editPersonalInfo(String address, String position) {
-        this.address = address;
-        this.position = position;
+    public void authorizeEmployee(Employee employee) {
+        // Logic for authorizing new employees
+        System.out.println("Employee authorized: " + employee.getFirstName());
+    }
+
+    public void displayAllEmployees(List<Employee> employees) {
+        // Logic to display all employees
+        for (Employee emp : employees) {
+            System.out.println(emp.getFirstName() + " " + emp.getLastName());
+        }
+    }
+
+    public void displayAllClients(List<Client> clients) {
+        // Logic to display all clients
+        for (Client client : clients) {
+            System.out.println(client.getFirstName() + " " + client.getLastName());
+        }
+    }
+
+    public void showTransactions(List<Transaction> transactions) {
+        // Logic to display transactions
+        for (Transaction transaction : transactions) {
+            System.out.println(transaction);
+        }
     }
 
     @Override
     public void displayMenu() {
-        System.out.println("Welcome, " + getFirstName());
-        System.out.println("1. Create Client Account");
-        System.out.println("2. Edit Client Account");
-        System.out.println("3. Search Client");
-        System.out.println("4. Delete Client Account");
+        System.out.println("Welcome, Admin.");
+        System.out.println("1. Authorize Employee");
+        System.out.println("2. Display Employees");
+        System.out.println("3. Display Clients");
+        System.out.println("4. View Transactions");
         System.out.println("5. Logout");
     }
 }
