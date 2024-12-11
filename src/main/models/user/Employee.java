@@ -1,12 +1,15 @@
 package models.user;
 
+import java.util.Map;
+
 public class Employee extends User{
     // Unique Attributes
+    private boolean isActive = false;
     private String address;
     private String position;
-    private String graduatedCollege;
-    private String totalGrade;
-    private int  yearOfGraduation;
+    public final String graduatedCollege;
+    public final String totalGrade;
+    public final int  yearOfGraduation;
 
     // Constructor
     public Employee(String firstName, String lastName, String address, String position, String username, String password,
@@ -14,22 +17,27 @@ public class Employee extends User{
         super(firstName, lastName, username, password);
         this.setAddress(address);
         this.setPosition(position);
+
+        // Setting the grade
+        if (totalGrade == null || totalGrade.trim().isEmpty())
+            throw new IllegalArgumentException("Total Grade cannot be empty!");
+        this.totalGrade = totalGrade;
+
+        // Setting the College
+        if (graduatedCollege == null || graduatedCollege.trim().isEmpty())
+            throw new IllegalArgumentException("Graduated College cannot be empty!");
+        this.graduatedCollege = graduatedCollege;
+
+        // Setting the year of graduation
+        if (yearOfGraduation < 1900 || yearOfGraduation > 2023)
+            throw new IllegalArgumentException("Year of Graduation must be between 1900 and 2023!");
+        this.yearOfGraduation = yearOfGraduation;
     }
 
     // Getters
     public String getAddress() {return address;}
-    public String getPosition() {
-        return position;
-    }
-    public String getTotalGrade() {
-        return totalGrade;
-    }
-    public int getYearOfGraduation() {
-        return yearOfGraduation;
-    }
-    public String getGraduatedCollege() {
-        return graduatedCollege;
-    }
+    public String getPosition() {return position;}
+    public boolean isActive() {return isActive;}
 
     // Setters
     public void setAddress(String address) {
@@ -42,27 +50,26 @@ public class Employee extends User{
             throw new IllegalArgumentException("Position cannot be empty!");
         this.position = position;
     }
-    public void setTotalGrade(String totalGrade) {
-        if (totalGrade == null || totalGrade.trim().isEmpty())
-            throw new IllegalArgumentException("Total Grade cannot be empty!");
-        this.totalGrade = totalGrade;
-    }
-    public void setGraduatedCollege(String graduatedCollege) {
-        if (graduatedCollege == null || graduatedCollege.trim().isEmpty())
-            throw new IllegalArgumentException("Graduated College cannot be empty!");
-        this.graduatedCollege = graduatedCollege;
-    }
-    public void setYearOfGraduation(int yearOfGraduation) {
-        if (yearOfGraduation < 1900 || yearOfGraduation > 2023)
-            throw new IllegalArgumentException("Year of Graduation must be between 1900 and 2023!");
-        this.yearOfGraduation = yearOfGraduation;
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
+    // Methods
     @Override
-    public void editUserInfo(String... args) {
-
-        if (address != null) this.address = args[0];
-        if (position != null) this.position = args[1];
+    public void editUserInfo(Map<String, String> changes) {
+        // Only allow address and position to be updated
+        if (changes.containsKey("address")) {
+            this.setAddress(changes.get("address"));
+        }
+        if (changes.containsKey("position")) {
+            this.setPosition(changes.get("position"));
+        }
+        // Ensure no other fields can be edited by the employee
+        for (String key : changes.keySet()) {
+            if (!key.equals("address") && !key.equals("position")) {
+                throw new IllegalArgumentException("Employee can only edit address and position.");
+            }
+        }
     }
     @Override
     public String toString() {
