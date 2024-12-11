@@ -8,8 +8,9 @@ public class Transaction {
     private String type; // Deposit, Withdrawal, Transfer
     private Date date;
     private String clientID;
+    private String empID;
 
-    public Transaction(String transactionID, double amount, String type, Date date, String clientID) {
+    public Transaction(String transactionID, double amount, String type, Date date, String clientID, String empID) {
         this.transactionID = transactionID;
         this.amount = amount;
         this.type = type;
