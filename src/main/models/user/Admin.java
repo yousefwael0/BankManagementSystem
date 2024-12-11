@@ -3,15 +3,53 @@ package models.user;
 import java.util.List;
 import models.account.Transaction;
 
-public class Admin extends User {
+public class Admin{
+    // Attributes
+    private String firstName;
+    private String lastName;
+    public final String username;
+    public final String password;
 
-    public Admin(int ID, String firstName, String lastName, String username, String password) {
-        super(ID, firstName, lastName, username, password);
+    // Constructor
+    public Admin(String firstName, String lastName) {
+        this.setFirstName(firstName);
+        this.setLastName(lastName);
+        this.username = "admin";
+        this.password = "admin";
     }
 
-    public void authorizeEmployee(Employee employee) {
+    // Getters / Setters
+    public String getFirstName() {
+        return firstName;
+    }
+    public void setFirstName(String firstName) {
+        if (firstName == null || firstName.trim().isEmpty()) {
+            throw new IllegalArgumentException("First name cannot be null or empty.");
+        }
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+    public void setLastName(String lastName) {
+        if (lastName == null || lastName.trim().isEmpty()) {
+            throw new IllegalArgumentException("First name cannot be null or empty.");
+        }
+        this.lastName = lastName;
+    }
+
+    // Methods
+    void authorizeEmployee(List<Employee> employees, Employee employee) {
         // Logic for authorizing new employees
-        System.out.println("Employee authorized: " + employee.getFirstName());
+        for (Employee emp : employees) {
+            if (employee.getUsername().equals(emp.getUsername()) && employee.getPassword().equals(emp.getPassword()) && employee.isActive()) {
+                System.out.println("Employee Already Exists: " + employee.getFirstName() + " " + employee.getLastName());
+                Employee.decreaseCounter();
+            }
+        }
+        employee.setActive(true);
+        employees.add(employee);
     }
 
     public void displayAllEmployees(List<Employee> employees) {
@@ -33,15 +71,5 @@ public class Admin extends User {
         for (Transaction transaction : transactions) {
             System.out.println(transaction);
         }
-    }
-
-    @Override
-    public void displayMenu() {
-        System.out.println("Welcome, Admin.");
-        System.out.println("1. Authorize Employee");
-        System.out.println("2. Display Employees");
-        System.out.println("3. Display Clients");
-        System.out.println("4. View Transactions");
-        System.out.println("5. Logout");
     }
 }
