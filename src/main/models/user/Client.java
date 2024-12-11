@@ -142,6 +142,7 @@ Clinet's data cannot be empty
         }
     }
     public void earnLoyaltyPoints(int amount) {loyaltyPoints.addPoints(amount);}
+    public void addAccount(Account account) {this.accounts.add(account);}
 
 /* in the bank class (Deposit, withdraw and transfer)
     public boolean makeTransaction(double amount) {
