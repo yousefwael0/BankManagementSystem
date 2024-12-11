@@ -2,9 +2,9 @@ package models.loyalty;
 
 public class LoyaltyPoints {
     private int points;
-    private int clientID;
+    public final String clientID;
 
-    public LoyaltyPoints(int clientID) {
+    public LoyaltyPoints(String clientID) {
         this.clientID = clientID;
         this.points = 0;  // Start with 0 points
     }
@@ -23,10 +23,6 @@ public class LoyaltyPoints {
         } else {
             System.out.println("Not enough points to redeem.");
         }
-    }
-
-    public int getClientID() {
-        return clientID;
     }
 
     @Override
