@@ -1,9 +1,11 @@
 package models.user;
 
+import java.util.Map;
+
 public abstract class User {
 
     // Attributes
-    public final int userId;
+    public final String userId;
     protected String firstName;
     protected String lastName;
     protected String username;
@@ -12,7 +14,7 @@ public abstract class User {
 
     // Constructors
     public User(String firstName,String lastName,String username,String password){
-        this.userId=counter;
+        this.userId=Integer.toString(counter);
         this.setFirstName(firstName);
         this.setLastName(lastName);
         this.setUsername(username);
@@ -76,5 +78,5 @@ public abstract class User {
     }
 
     // Methods
-    public abstract void editUserInfo(String... args);
+    public abstract void editUserInfo(Map<String, String> changes);
 }
