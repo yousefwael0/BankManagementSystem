@@ -14,18 +14,6 @@ public abstract class User {
 
     // Constructors
     public User(String firstName,String lastName,String username,String password){
-        if (firstName == null || firstName.trim().isEmpty()) {
-            throw new IllegalArgumentException("First Name cannot be empty");
-        }
-        if (lastName == null || lastName.trim().isEmpty()) {
-            throw new IllegalArgumentException("last Name cannot be empty");
-        }
-        if (username == null || username.trim().isEmpty()) {
-            throw new IllegalArgumentException("Username cannot be empty");
-        }
-        if (password == null || password.length() < 8) {
-            throw new IllegalArgumentException("Password must be at least 8 characters");
-        }
         this.userId=Integer.toString(counter);
         this.setFirstName(firstName);
         this.setLastName(lastName);
