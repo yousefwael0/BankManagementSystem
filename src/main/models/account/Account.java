@@ -5,13 +5,13 @@ import models.user.Client;
 
 class InsufficientBalanceException extends Exception {
     public InsufficientBalanceException(String message) {
-        super(message);
+        super(message); //dy lw withdraw akbr mn balance
     }
 }
 
 class InvalidAmountException extends Exception {
     public InvalidAmountException(String message) {
-        super(message);
+        super(message);//dy lw negative
     }
 }
 
