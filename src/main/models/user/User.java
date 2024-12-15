@@ -31,7 +31,7 @@ public abstract class User {
     }
     public void setFirstName(String firstName) {
         if (firstName == null || firstName.trim().isEmpty()) {
-            throw new IllegalArgumentException("First name cannot be null or empty.");
+            throw new IllegalArgumentException("First name cannot be empty.");
         }
         this.firstName = firstName;
     }
@@ -41,7 +41,7 @@ public abstract class User {
     }
     public void setLastName(String lastName) {
         if (lastName == null || lastName.trim().isEmpty()) {
-            throw new IllegalArgumentException("First name cannot be null or empty.");
+            throw new IllegalArgumentException("last name cannot be empty.");
         }
         this.lastName = lastName;
     }
@@ -51,7 +51,7 @@ public abstract class User {
     }
     public void setUsername(String username) {
         if (username == null || username.trim().isEmpty()) {
-            throw new IllegalArgumentException("First name cannot be null or empty.");
+            throw new IllegalArgumentException("user name cannot be empty.");
         }
         this.username = username;
     }
@@ -60,8 +60,8 @@ public abstract class User {
         return password;
     }
     public void setPassword(String password) {
-        if (password == null || password.trim().isEmpty()) {
-            throw new IllegalArgumentException("First name cannot be null or empty.");
+        if (password == null || password.length() < 8) {
+            throw new IllegalArgumentException("Password must be at least 8 characters");
         }
         this.password = password;
     }
