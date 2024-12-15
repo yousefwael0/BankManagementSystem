@@ -8,15 +8,16 @@ public class Transaction {
     private String type;
     private double amount;
     private String employeeId;
-    private int counter=1;
+    private static int counter = 1; // Counter made static to ensure it increments globally
+
     // Constructor
-    public Transaction(long transactionId, LocalDateTime date, String type, double amount, String employeeId) {
-        this.transactionId = counter;
-        this.date = date;
-        this.type = type;
-        this.amount = amount;
-        this.employeeId = employeeId;
-        counter++;
+    public Transaction(LocalDateTime date, String type, double amount, String employeeId) {
+
+        this.transactionId = counter++;
+        this.setDate(date);
+        this.setType(type);
+        this.setAmount(amount);
+        this.setEmployeeId(employeeId);
     }
 
     // Getter and Setter methods
@@ -24,16 +25,14 @@ public class Transaction {
         return transactionId;
     }
 
-    public void setTransactionId(long transactionId) {
-        this.transactionId = counter;
-        counter++;
-    }
-
     public LocalDateTime getDate() {
         return date;
     }
 
     public void setDate(LocalDateTime date) {
+        if (date == null) {
+            throw new IllegalArgumentException("Transaction date cannot be null.");
+        }
         this.date = date;
     }
 
@@ -42,6 +41,9 @@ public class Transaction {
     }
 
     public void setType(String type) {
+        if (type == null || type.isEmpty()) {
+            throw new IllegalArgumentException("Transaction type cannot be null or empty.");
+        }
         this.type = type;
     }
 
@@ -50,6 +52,9 @@ public class Transaction {
     }
 
     public void setAmount(double amount) {
+        if (amount < 0) {
+            throw new IllegalArgumentException("Transaction amount cannot be negative.");
+        }
         this.amount = amount;
     }
 
@@ -58,9 +63,11 @@ public class Transaction {
     }
 
     public void setEmployeeId(String employeeId) {
+        if (employeeId == null || employeeId.isEmpty()) {
+            throw new IllegalArgumentException("Employee ID cannot be null or empty.");
+        }
         this.employeeId = employeeId;
     }
-
 
     // Method to get transaction details
     public String getTransactionDetails() {
@@ -73,4 +80,8 @@ public class Transaction {
     }
 
 }
+
+
+
+
 
