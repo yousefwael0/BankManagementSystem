@@ -3,23 +3,6 @@ package models.account;
 import models.user.Client;
 
 
-class InsufficientBalanceException extends Exception {
-    public InsufficientBalanceException(String message) {
-        super(message); //dy lw withdraw akbr mn balance
-    }
-}
-
-class InvalidAmountException extends Exception {
-    public InvalidAmountException(String message) {
-        super(message);//dy lw negative
-    }
-}
-
-class AccountClosedException extends Exception {
-    public AccountClosedException(String message) {
-        super(message);
-    }
-}
 
 public abstract class Account {
     public final String accountNumber;
@@ -30,12 +13,12 @@ public abstract class Account {
     public final Client client;
 
     // Constructors
-    public Account(String accountNumber,String accountType, double balance,double interestRate, Client client)  throws InvalidAmountException {
+    public Account(String accountNumber,String accountType, double balance,double interestRate, Client client)  throws IllegalArgumentException {
         if (balance < 0) {
-            throw new InvalidAmountException("Initial balance cannot be negative");
+            throw new IllegalArgumentException("Initial balance cannot be negative");
         }
         if (interestRate < 0) {
-            throw new InvalidAmountException("Interest rate cannot be negative");
+            throw new IllegalArgumentException("Interest rate cannot be negative");
         }
         if (client == null) {
             throw new IllegalArgumentException("Client cannot be null");
@@ -69,38 +52,37 @@ public abstract class Account {
         return client;
     }
 
-    private void checkAccountActive() throws AccountClosedException {
+    private void checkAccountActive() throws IllegalArgumentException {
         if ("Closed".equals(status)) {
-            throw new AccountClosedException("Cannot perform operations on a closed account");
+            throw new IllegalArgumentException("Cannot perform operations on a closed account");
         }
     }
 
-    public void checkAccountStatus() throws AccountClosedException {
+    public void checkAccountStatus() throws IllegalArgumentException{
         checkAccountActive();
         System.out.println("Current account status: " + status);
     }
 
     // Methods
-    public void deposit(double amount) throws InvalidAmountException, AccountClosedException {
+    public void deposit(double amount) throws IllegalArgumentException {
         checkAccountActive();
 
         if (amount <= 0) {
-            throw new InvalidAmountException("Deposit amount must be positive");
+            throw new IllegalArgumentException("Deposit amount must be positive");
         }
 
         balance += amount;
     }
 
-    public void withdraw(double amount) throws InvalidAmountException, InsufficientBalanceException,
-            AccountClosedException {
+    public void withdraw(double amount) throws IllegalArgumentException {
         checkAccountActive();
 
         if (amount <= 0) {
-            throw new InvalidAmountException("Withdrawal amount must be positive");
+            throw new IllegalArgumentException("Withdrawal amount must be positive");
         }
 
         if (amount > balance) {
-            throw new InsufficientBalanceException(
+            throw new IllegalArgumentException(
                     String.format("Insufficient balance. Available: %.2f, Requested: %.2f", balance, amount)
             );
         }
@@ -108,16 +90,16 @@ public abstract class Account {
         balance -= amount;
     }
 
-    public void closeAccount() throws AccountClosedException {
+    public void closeAccount() throws IllegalArgumentException {
         if ("Closed".equals(status)) {
-            throw new AccountClosedException("Account is already closed");
+            throw new IllegalArgumentException("Account is already closed");
         }
         this.status = "Closed";
     }
 
-    public void openAccount() throws AccountClosedException {
+    public void openAccount() throws IllegalArgumentException {
         if ("Active".equals(status)) {
-            throw new AccountClosedException("Account is already active");
+            throw new IllegalArgumentException("Account is already active");
         }
         this.status = "Active";
     }
