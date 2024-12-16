@@ -99,6 +99,14 @@ Clinet's data cannot be empty
     }
   */
 
+    // Getters / Setters
+    public List<Account> getAccounts() {
+        return accounts;
+    }
+    public LoyaltyPoints getLoyaltyPoints() {
+        return loyaltyPoints;
+    }
+
     // Methods
     /*    public void editPersonalInfo(String newNumber, String newState){
 
