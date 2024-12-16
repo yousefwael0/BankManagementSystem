@@ -2,20 +2,31 @@ package models.account;
 
 import models.user.Client;
 
-public class Account {
+
+
+public abstract class Account {
     public final String accountNumber;
-    public final AccountType type; // Savings or Current
+    public String accountType; // Savings or Current
     private double balance;
     private String status; // Active or Closed
     private double interestRate;
     public final Client client;
 
     // Constructors
-    public Account(String accountNumber, AccountType type, double balance, String status, double interestRate, Client client) {
+    public Account(String accountNumber,String accountType, double balance,double interestRate, Client client)  throws IllegalArgumentException {
+        if (balance < 0) {
+            throw new IllegalArgumentException("Initial balance cannot be negative");
+        }
+        if (interestRate < 0) {
+            throw new IllegalArgumentException("Interest rate cannot be negative");
+        }
+        if (client == null) {
+            throw new IllegalArgumentException("Client cannot be null");
+        }
         this.accountNumber = accountNumber;
-        this.type = type;
+        this.accountType=accountType;
         this.balance = balance;
-        this.status = status;
+        this.status ="Active";
         this.interestRate = interestRate;
         this.client = client;
     }
@@ -24,35 +35,75 @@ public class Account {
     public double getBalance() {
         return balance;
     }
+
     public String getStatus() {
         return status;
     }
+
     public double getInterestRate() {
         return interestRate;
     }
-    public void setInterestRate(double interestRate) {this.interestRate = interestRate;}
-    public Client getClient(){
+
+    public void setInterestRate(double interestRate) {
+        this.interestRate = interestRate;
+    }
+
+    public Client getClient() {
         return client;
     }
 
-
-    // Methods
-    public void deposit(double amount) {
-        this.balance += amount;
-    }
-    public void withdraw(double amount) {
-        if (this.balance - amount >= 0) {
-            this.balance -= amount;
-        } else {
-            System.out.println("Insufficient balance.");
+    private void checkAccountActive() throws IllegalArgumentException {
+        if ("Closed".equals(status)) {
+            throw new IllegalArgumentException("Cannot perform operations on a closed account");
         }
     }
-    public void closeAccount() {
+
+    public void checkAccountStatus() throws IllegalArgumentException{
+        checkAccountActive();
+        System.out.println("Current account status: " + status);
+    }
+
+    // Methods
+    public void deposit(double amount) throws IllegalArgumentException {
+        checkAccountActive();
+
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Deposit amount must be positive");
+        }
+
+        balance += amount;
+    }
+
+    public void withdraw(double amount) throws IllegalArgumentException {
+        checkAccountActive();
+
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Withdrawal amount must be positive");
+        }
+
+        if (amount > balance) {
+            throw new IllegalArgumentException(
+                    String.format("Insufficient balance. Available: %.2f, Requested: %.2f", balance, amount)
+            );
+        }
+
+        balance -= amount;
+    }
+
+    public void closeAccount() throws IllegalArgumentException {
+        if ("Closed".equals(status)) {
+            throw new IllegalArgumentException("Account is already closed");
+        }
         this.status = "Closed";
     }
-    public void openAccount() {
+
+    public void openAccount() throws IllegalArgumentException {
+        if ("Active".equals(status)) {
+            throw new IllegalArgumentException("Account is already active");
+        }
         this.status = "Active";
     }
+
 
     @Override
     public String toString() {
