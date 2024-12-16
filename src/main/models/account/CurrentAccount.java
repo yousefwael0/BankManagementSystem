@@ -5,9 +5,9 @@ public class CurrentAccount extends Account {
     private static final double MINIMUM_BALANCE = 3000.0;
     private static final double PENALTY_FEE = 100.0;
 
-    public CurrentAccount(String accountNumber, double balance, Client client)
+    public CurrentAccount(String accountNumber, double balance, String clientId)
             throws IllegalArgumentException {
-        super(accountNumber, "Current", balance, 0.0, client);
+        super(accountNumber, "CURRENT", balance, 0.0, clientId);
     }
 
     public void checkMinimumBalance() throws IllegalArgumentException {

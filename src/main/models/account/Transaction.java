@@ -8,16 +8,18 @@ public class Transaction {
     private String type;
     private double amount;
     private String employeeId;
+    public final String clientId;
     private static int counter = 1; // Counter made static to ensure it increments globally
 
     // Constructor
-    public Transaction(LocalDateTime date, String type, double amount, String employeeId) {
+    public Transaction(LocalDateTime date, String type, double amount, String employeeId, String clientId) {
 
         this.transactionId = Integer.toString(counter++);
         this.setDate(date);
         this.setType(type);
         this.setAmount(amount);
         this.setEmployeeId(employeeId);
+        this.clientId = clientId;
     }
 
     // Getter and Setter methods
@@ -72,11 +74,13 @@ public class Transaction {
     public static void setCounter(int counter) {
         Transaction.counter = counter;
     }
+    public static int getCounter() {return counter;}
 
     // Method to get transaction details
     public String getTransactionDetails() {
         return "Transaction Details:\n" +
                 "Transaction ID: " + transactionId + "\n" +
+                "Client ID: " + clientId + "\n" +
                 "Date: " + date + "\n" +
                 "Type: " + type + "\n" +
                 "Amount: " + amount + "\n" +
