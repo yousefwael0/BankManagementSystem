@@ -1,51 +1,87 @@
 package models.account;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class Transaction {
-    private String transactionID;
+    private long transactionId;
+    private LocalDateTime date;
+    private String type;
     private double amount;
-    private String type; // Deposit, Withdrawal, Transfer
-    private Date date;
-    private String clientID;
-    private String empID;
+    private String employeeId;
+    private static int counter = 1; // Counter made static to ensure it increments globally
 
-    public Transaction(String transactionID, double amount, String type, Date date, String clientID, String empID) {
-        this.transactionID = transactionID;
-        this.amount = amount;
-        this.type = type;
+    // Constructor
+    public Transaction(LocalDateTime date, String type, double amount, String employeeId) {
+
+        this.transactionId = counter++;
+        this.setDate(date);
+        this.setType(type);
+        this.setAmount(amount);
+        this.setEmployeeId(employeeId);
+    }
+
+    // Getter and Setter methods
+    public long getTransactionId() {
+        return transactionId;
+    }
+
+    public LocalDateTime getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDateTime date) {
+        if (date == null) {
+            throw new IllegalArgumentException("Transaction date cannot be null.");
+        }
         this.date = date;
-        this.clientID = clientID;
-    }
-
-    public String getTransactionID() {
-        return transactionID;
-    }
-
-    public double getAmount() {
-        return amount;
     }
 
     public String getType() {
         return type;
     }
 
-    public Date getDate() {
-        return date;
+    public void setType(String type) {
+        if (type == null || type.isEmpty()) {
+            throw new IllegalArgumentException("Transaction type cannot be null or empty.");
+        }
+        this.type = type;
     }
 
-    public String getClientID() {
-        return clientID;
+    public double getAmount() {
+        return amount;
     }
 
-    @Override
-    public String toString() {
-        return "Transaction{" +
-                "transactionID='" + transactionID + '\'' +
-                ", amount=" + amount +
-                ", type='" + type + '\'' +
-                ", date=" + date +
-                ", clientID='" + clientID + '\'' +
-                '}';
+    public void setAmount(double amount) {
+        if (amount < 0) {
+            throw new IllegalArgumentException("Transaction amount cannot be negative.");
+        }
+        this.amount = amount;
     }
+
+    public String getEmployeeId() {
+        return employeeId;
+    }
+
+    public void setEmployeeId(String employeeId) {
+        if (employeeId == null || employeeId.isEmpty()) {
+            throw new IllegalArgumentException("Employee ID cannot be null or empty.");
+        }
+        this.employeeId = employeeId;
+    }
+
+    // Method to get transaction details
+    public String getTransactionDetails() {
+        return "Transaction Details:\n" +
+                "Transaction ID: " + transactionId + "\n" +
+                "Date: " + date + "\n" +
+                "Type: " + type + "\n" +
+                "Amount: " + amount + "\n" +
+                "Employee ID: " + employeeId;
+    }
+
 }
+
+
+
+
+

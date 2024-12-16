@@ -2,30 +2,83 @@ package models.account;
 
 import models.user.Client;
 
+import java.util.Scanner;
+import java.util.InputMismatchException;
+
 public class CreditCard {
     public final String cardNumber;
-    private double limit = 20000;  // Fixed amount for the card
-    private String status = "Active";  // Card status (Active/Disabled)
-    private Account account;  // Reference to the client owning this card
+    private double limit=20000;
+    private boolean isActive = true;
+    //private Account account
+    Scanner scan = new Scanner(System.in);
 
-    public CreditCard(String cardNumber, Client client) {
+    public CreditCard(String cardNumber, boolean isActive) {
         this.cardNumber = cardNumber;
-        this.account = account;
+        this.isActive = isActive;
     }
 
-    public void makePayment(double amount) {
-        if (amount <= limit) {
-            this.limit -= amount;
-            System.out.println("Payment of " + amount + " successful.");
-            // Add loyalty points for the payment made
-            account.getClient().earnLoyaltyPoints((int) amount / 10); // Example: 1 point for every 10 LE spent
-        } else {
-            System.out.println("Payment exceeds card limit.");
+    public double getLimit() {
+        return limit;
+    }
+
+    public void makePayment() {
+
+        //Validate Card Number
+        if (!cardNumber.equals(this.cardNumber)) {
+            System.out.println("Invalid card number");
+            return;
+        }
+
+        System.out.println("Enter Amount:");
+
+
+        try {
+            double amount = scan.nextDouble();
+
+            //Check if Card is active and amount is less than limit
+            if (isActive && amount <= limit) {
+                System.out.println("Payment Successful :)");
+                limit=getLimit()-amount;
+            } else if (!isActive) {
+                System.out.println("Card disabled :(");
+            } else if (amount > limit) {
+                System.out.println("Amount exceeded limit :(");
+            }
+        }catch (InputMismatchException e) {
+            System.out.println("Invalid input. Please try again.");
+            scan.nextLine();
         }
     }
 
-    public void disableCard() {
-        this.status = "Disabled";
-        System.out.println("Credit card disabled.");
+    //Resetting limit
+    public void resetLimit() {
+        limit=20000;
+    }
+
+
+
+    public boolean disableCard(String cardNumber){
+
+        //Validate Card Number
+
+        if(!this.cardNumber.equals(cardNumber)) {
+            System.out.println("Invalid card number");
+            return false;
+        }
+        System.out.println("Card disabled");
+        isActive= false;
+        return true;
+    }
+
+    public boolean activateCard(String cardNumber){
+
+        //Validate Card Number
+        if(!this.cardNumber.equals(cardNumber)) {
+            System.out.println("Invalid card number");
+            return false;
+        }
+        System.out.println("Card activated");
+        isActive= true;
+        return true;
     }
 }
