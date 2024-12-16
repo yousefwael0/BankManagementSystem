@@ -69,6 +69,9 @@ public abstract class User {
     public static int getCounter() {
         return counter;
     }
+    public static void setCounter(int counter) {
+        User.counter = counter;
+    }
     public static void decreaseCounter(){
         if (counter > 1) {
             counter--;

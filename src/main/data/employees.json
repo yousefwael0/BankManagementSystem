@@ -1,0 +1,41 @@
+[
+  {
+    "isActive": true,
+    "address": "123 Main St, Cairo, Egypt",
+    "position": "Manager",
+    "graduatedCollege": "Cairo University",
+    "totalGrade": "Excellent",
+    "yearOfGraduation": 2015,
+    "userId": "1",
+    "firstName": "Yousef",
+    "lastName": "Wael",
+    "username": "yousef",
+    "password": "wael"
+  },
+  {
+    "isActive": true,
+    "address": "456 Elm St, Alexandria, Egypt",
+    "position": "Cashier",
+    "graduatedCollege": "Alexandria University",
+    "totalGrade": "Very Good",
+    "yearOfGraduation": 2018,
+    "userId": "2",
+    "firstName": "Mostafa",
+    "lastName": "Hagras",
+    "username": "mostafa",
+    "password": "hagras"
+  },
+  {
+    "isActive": false,
+    "address": "789 Oak St, Giza, Egypt",
+    "position": "Teller",
+    "graduatedCollege": "Giza University",
+    "totalGrade": "Good",
+    "yearOfGraduation": 2020,
+    "userId": "3",
+    "firstName": "Karim",
+    "lastName": "Amr",
+    "username": "karim",
+    "password": "amr"
+  }
+]
