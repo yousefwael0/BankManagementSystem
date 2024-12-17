@@ -38,7 +38,9 @@ public class AdminWindow extends JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                handleClose();
+                // Save data
+                saveData();
+                System.exit(0); // Exit the program
             }
         });
 
@@ -121,25 +123,6 @@ public class AdminWindow extends JFrame {
         tablePanel.add(transactionScrollPane, "Transactions");
         add(tablePanel, BorderLayout.SOUTH);
     }
-    private void handleClose() {
-        // Confirm before exiting
-        int choice = JOptionPane.showConfirmDialog(
-                this,
-                "Do you want to save your data before exiting?",
-                "Confirm Exit",
-                JOptionPane.YES_NO_CANCEL_OPTION,
-                JOptionPane.QUESTION_MESSAGE
-        );
-
-        if (choice == JOptionPane.YES_OPTION) {
-            // Save data
-            saveData();
-            System.exit(0); // Exit the program
-        } else if (choice == JOptionPane.NO_OPTION) {
-            System.exit(0); // Exit without saving
-        }
-        // Cancel option does nothing
-    }
     private void saveData() {
         try {
             // Save clients and employees to their respective files
@@ -148,8 +131,6 @@ public class AdminWindow extends JFrame {
 
             FileManager.saveToJson(clientsFilePath, bank.getClients());
             FileManager.saveToJson(employeesFilePath, bank.getEmployees());
-
-            JOptionPane.showMessageDialog(this, "Data saved successfully.");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error saving data: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -226,7 +207,7 @@ public class AdminWindow extends JFrame {
                     transaction.getAmount(),
                     transaction.getType(),
                     transaction.getDate(),
-                    //transaction.getClientID(),
+                    transaction.clientId,
                     transaction.getEmployeeId()
             });
         }

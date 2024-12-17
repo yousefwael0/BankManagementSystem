@@ -1,34 +1,34 @@
 package models.account;
 
-import models.user.Client;
-
-
 
 public abstract class Account {
     public final String accountNumber;
-    public String accountType; // Savings or Current
+    public final String accountType; // Savings or Current
     private double balance;
     private String status; // Active or Closed
     private double interestRate;
-    public final Client client;
+    public final String clientId;
+    private CreditCard creditCard;
+    private static int counter = 1;
 
     // Constructors
-    public Account(String accountNumber,String accountType, double balance,double interestRate, Client client)  throws IllegalArgumentException {
+    public Account(String accountType, double balance,double interestRate, String clientId, CreditCard creditCard)  throws IllegalArgumentException {
         if (balance < 0) {
             throw new IllegalArgumentException("Initial balance cannot be negative");
         }
         if (interestRate < 0) {
             throw new IllegalArgumentException("Interest rate cannot be negative");
         }
-        if (client == null) {
-            throw new IllegalArgumentException("Client cannot be null");
+        if (clientId == null) {
+            throw new IllegalArgumentException("Client ID cannot be null");
         }
-        this.accountNumber = accountNumber;
+        this.accountNumber = generateAccountNumber();
         this.accountType=accountType;
         this.balance = balance;
         this.status ="Active";
         this.interestRate = interestRate;
-        this.client = client;
+        this.clientId = clientId;
+        this.creditCard = creditCard;
     }
 
     // Getters / Setters
@@ -48,8 +48,8 @@ public abstract class Account {
         this.interestRate = interestRate;
     }
 
-    public Client getClient() {
-        return client;
+    public String getClientId() {
+        return clientId;
     }
 
     private void checkAccountActive() throws IllegalArgumentException {
@@ -104,9 +104,17 @@ public abstract class Account {
         this.status = "Active";
     }
 
+    public void askForCreditCard() throws IllegalArgumentException {
+        checkAccountActive();
+        if (creditCard != null) {
+            throw new IllegalArgumentException("Credit card already exists for this account");
+        }
+        creditCard = new CreditCard(this.accountNumber, this.clientId, true);
+    }
 
     @Override
     public String toString() {
         return "Account Number: " + this.accountNumber + ", Balance: " + this.balance + ", Status: " + this.status;
     }
+    public String generateAccountNumber(){return "ACC" + String.format("%03d", counter++);}
 }

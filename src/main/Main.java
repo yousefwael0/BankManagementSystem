@@ -20,6 +20,8 @@ public class Main {
         // Setting the initial id counters to avoid conflicts with save files
         User.setCounter(bank.getClients().size()+bank.getEmployees().size()+1);
         Transaction.setCounter(bank.getTransactions().size()+1);
+        System.out.println("transaction count: " + Transaction.getCounter());
+        System.out.println("user counter: " + User.getCounter());
 
         // Step 2: Launch the Login Window
         new LoginWindow(bank).setVisible(true);
