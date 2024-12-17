@@ -4,7 +4,13 @@ import javax.swing.*;
 import services.Bank;
 import models.user.Employee;
 import models.user.Client;
-
+import java.awt.*;
+import java.util.Objects;
+import javax.swing.*;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.DocumentFilter;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
 import java.awt.*;
 
 public class EmployeeWindow extends JFrame {
@@ -19,6 +25,35 @@ public class EmployeeWindow extends JFrame {
         return textField;
     }
 
+    private JTextField makeNumericField() {
+        JTextField textField = new JTextField(20);
+        textField.setFont(new Font("Arial", Font.PLAIN, 14));
+        textField.setPreferredSize(new Dimension(200, 30));
+
+        // Add a DocumentFilter to allow fractional numbers
+        ((AbstractDocument) textField.getDocument()).setDocumentFilter(new DocumentFilter() {
+            @Override
+            public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+                if (string != null && isValidInput(fb.getDocument().getText(0, fb.getDocument().getLength()) + string)) {
+                    super.insertString(fb, offset, string, attr);
+                }
+            }
+
+            @Override
+            public void replace(FilterBypass fb, int offset, int length, String string, AttributeSet attr) throws BadLocationException {
+                if (string != null && isValidInput(fb.getDocument().getText(0, fb.getDocument().getLength() - length) + string)) {
+                    super.replace(fb, offset, length, string, attr);
+                }
+            }
+
+            private boolean isValidInput(String text) {
+                return text.matches("-?\\d*(\\.\\d*)?"); // Matches optional '-', digits, and optional decimal
+            }
+        });
+
+        return textField;
+    }
+
     private JPasswordField makePasswordField() {
         JPasswordField passwordField = new JPasswordField(20);
         passwordField.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -26,19 +61,26 @@ public class EmployeeWindow extends JFrame {
         return passwordField;
     }
 
+    private JComboBox<String> comboBox(String first, String second) {
+        String[] options = {first, second};
+        JComboBox<String> comboBox = new JComboBox<>(options);
+        comboBox.setSelectedIndex(-1);
+        return comboBox;
+    }
+
     private void createClientAcc() {
-        JTextField firstNameField = makeTextField();
-        JTextField lastNameField = makeTextField();
         JTextField usernameField = makeTextField();
         JPasswordField passwordField = makePasswordField();
-        JTextField phoneNumberField = makeTextField();
+        JComboBox <String> accountTypeField = comboBox("Savings", "Current");
+        JTextField balanceField = makeNumericField();
+        JTextField interestRfield = makeNumericField();
 
         Object[] fields = {
-                "Enter client's first name:", firstNameField,
-                "Enter client's last name:", lastNameField,
                 "Enter client's username:", usernameField,
                 "Enter client's password:", passwordField,
-                "Enter client's phone number:", phoneNumberField
+                "Enter client's account type:", accountTypeField,
+                "Enter client's balance: ", balanceField,
+                "Enter client's interest rate: ", interestRfield
         };
 
         int response = JOptionPane.OK_OPTION;
@@ -53,13 +95,13 @@ public class EmployeeWindow extends JFrame {
             );
 
             if (response == JOptionPane.OK_OPTION) {
-                String firstName = firstNameField.getText();
-                String lastName = lastNameField.getText();
                 String username = usernameField.getText();
                 String password = new String(passwordField.getPassword());
-                String phoneNumber = phoneNumberField.getText();
+                String accountType = (String) accountTypeField .getSelectedItem();
+                String balance = balanceField.getText();
+                String interest_rate = interestRfield.getText();
 
-                if (firstName.isEmpty() || lastName.isEmpty() || username.isEmpty() || password.isEmpty() || phoneNumber.isEmpty()) {
+                if (username.isEmpty() || password.isEmpty() || accountType == null || balance.isEmpty() || interest_rate.isEmpty()) {
                     JOptionPane.showMessageDialog(
                             this,
                             "All fields must be filled in. Please provide valid information for all fields.",
@@ -69,9 +111,7 @@ public class EmployeeWindow extends JFrame {
                 }
                 else {
                     try {
-                        Client newClient = new Client(firstName, lastName, username, password, phoneNumber);
                         //el logic bta3 el add account. @yousef
-
                         JOptionPane.showMessageDialog(
                                 this,
                                 "New client Account created successfully.",
@@ -199,6 +239,7 @@ public class EmployeeWindow extends JFrame {
                     functionOutputArea.setText("");
                     functionOutputArea.append("Edit info selected\n");
                     // Implement edit information logic
+
                 }
 
                 else if (button.getText().equals("Create Client Account")) {
@@ -221,7 +262,6 @@ public class EmployeeWindow extends JFrame {
 
             buttonPanel.add(button);
         }
-
         return buttonPanel;
     }
 }
