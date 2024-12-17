@@ -1,8 +1,5 @@
 package models.account;
 
-import models.user.Client;
-
-
 
 public abstract class Account {
     public final String accountNumber;
@@ -11,9 +8,11 @@ public abstract class Account {
     private String status; // Active or Closed
     private double interestRate;
     public final String clientId;
+    private CreditCard creditCard;
+    private static int counter = 1;
 
     // Constructors
-    public Account(String accountNumber,String accountType, double balance,double interestRate, String clientId)  throws IllegalArgumentException {
+    public Account(String accountType, double balance,double interestRate, String clientId, CreditCard creditCard)  throws IllegalArgumentException {
         if (balance < 0) {
             throw new IllegalArgumentException("Initial balance cannot be negative");
         }
@@ -23,12 +22,13 @@ public abstract class Account {
         if (clientId == null) {
             throw new IllegalArgumentException("Client ID cannot be null");
         }
-        this.accountNumber = accountNumber;
+        this.accountNumber = generateAccountNumber();
         this.accountType=accountType;
         this.balance = balance;
         this.status ="Active";
         this.interestRate = interestRate;
         this.clientId = clientId;
+        this.creditCard = creditCard;
     }
 
     // Getters / Setters
@@ -104,9 +104,17 @@ public abstract class Account {
         this.status = "Active";
     }
 
+    public void askForCreditCard() throws IllegalArgumentException {
+        checkAccountActive();
+        if (creditCard != null) {
+            throw new IllegalArgumentException("Credit card already exists for this account");
+        }
+        creditCard = new CreditCard(this.accountNumber, this.clientId, true);
+    }
 
     @Override
     public String toString() {
         return "Account Number: " + this.accountNumber + ", Balance: " + this.balance + ", Status: " + this.status;
     }
+    public String generateAccountNumber(){return "ACC" + String.format("%03d", counter++);}
 }

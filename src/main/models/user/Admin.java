@@ -1,9 +1,6 @@
 package models.user;
 
-import java.util.List;
 import java.util.Map;
-
-import models.account.Transaction;
 
 public class Admin extends User{
     // Constructor
