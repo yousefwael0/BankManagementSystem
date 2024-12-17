@@ -3,7 +3,7 @@ package models.account;
 import java.time.LocalDateTime;
 
 public class Transaction {
-    private long transactionId;
+    private String transactionId;
     private LocalDateTime date;
     private String type;
     private double amount;
@@ -13,7 +13,7 @@ public class Transaction {
     // Constructor
     public Transaction(LocalDateTime date, String type, double amount, String employeeId) {
 
-        this.transactionId = counter++;
+        this.transactionId = Integer.toString(counter++);
         this.setDate(date);
         this.setType(type);
         this.setAmount(amount);
@@ -21,7 +21,7 @@ public class Transaction {
     }
 
     // Getter and Setter methods
-    public long getTransactionId() {
+    public String getTransactionId() {
         return transactionId;
     }
 
@@ -67,6 +67,10 @@ public class Transaction {
             throw new IllegalArgumentException("Employee ID cannot be null or empty.");
         }
         this.employeeId = employeeId;
+    }
+
+    public static void setCounter(int counter) {
+        Transaction.counter = counter;
     }
 
     // Method to get transaction details

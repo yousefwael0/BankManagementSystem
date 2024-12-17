@@ -6,13 +6,13 @@ import services.Bank;
 import models.user.Employee;
 import models.user.Client;
 import models.account.Transaction;
+import services.FileManager;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.List;
 
 public class AdminWindow extends JFrame {
@@ -30,9 +30,17 @@ public class AdminWindow extends JFrame {
         setTitle("Admin Dashboard");
         setSize(800, 600);  // Set an initial size for the window
         setResizable(false);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setLayout(new BorderLayout());
         setLocationRelativeTo(null);
+
+        // Add a WindowListener to handle the close button
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                handleClose();
+            }
+        });
 
         // Initialize UI components
         initializeComponents();
@@ -113,6 +121,39 @@ public class AdminWindow extends JFrame {
         tablePanel.add(transactionScrollPane, "Transactions");
         add(tablePanel, BorderLayout.SOUTH);
     }
+    private void handleClose() {
+        // Confirm before exiting
+        int choice = JOptionPane.showConfirmDialog(
+                this,
+                "Do you want to save your data before exiting?",
+                "Confirm Exit",
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+        );
+
+        if (choice == JOptionPane.YES_OPTION) {
+            // Save data
+            saveData();
+            System.exit(0); // Exit the program
+        } else if (choice == JOptionPane.NO_OPTION) {
+            System.exit(0); // Exit without saving
+        }
+        // Cancel option does nothing
+    }
+    private void saveData() {
+        try {
+            // Save clients and employees to their respective files
+            String clientsFilePath = "src/main/data/clients.json";
+            String employeesFilePath = "src/main/data/employees.json";
+
+            FileManager.saveToJson(clientsFilePath, bank.getClients());
+            FileManager.saveToJson(employeesFilePath, bank.getEmployees());
+
+            JOptionPane.showMessageDialog(this, "Data saved successfully.");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error saving data: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
     // Method to authorize new employee
     private void authorizeNewEmployee() {
@@ -126,9 +167,8 @@ public class AdminWindow extends JFrame {
             return;
         }
 
-        // Create new Employee and add it to the system
         try{
-            bank.authorizeEmployee(bank.getEmployee(username, password));
+            bank.authorizeEmployee(bank.getEmployeeByUsername(username));
         }catch (IllegalArgumentException e){
             JOptionPane.showMessageDialog(this, e.getMessage());
             return;
@@ -182,12 +222,12 @@ public class AdminWindow extends JFrame {
 
         for (Transaction transaction : transactions) {
             model.addRow(new Object[]{
-                    transaction.getTransactionID(),
+                    transaction.getTransactionId(),
                     transaction.getAmount(),
                     transaction.getType(),
                     transaction.getDate(),
-                    transaction.getClientID(),
-                    transaction.getEmpID()
+                    //transaction.getClientID(),
+                    transaction.getEmployeeId()
             });
         }
 

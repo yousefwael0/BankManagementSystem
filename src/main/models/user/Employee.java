@@ -76,43 +76,4 @@ public class Employee extends User{
         return "Employee ID: " + userId + ", Name: " + firstName + " " + lastName +
                 ", Address: " + address + ", Position: " + position;
     }
-
-    // Commented to implement in Bank Class (Bank handles all Lists and additions)
-    /*static class EmployeeManager {
-        private List<Employee> employees = new ArrayList<>();
-
-        public void addEmployee(Employee employee) {
-            employees.add(employee);
-        }
-
-        public void editEmployee(String empId, String address, String position) throws EmployeeException {
-            Employee employee = findEmployeeById(empId);
-            if (employee == null) {
-                throw new EmployeeException("Employee with ID " + empId + " not found!");
-            } else {
-                employee.editInfo(address, position);
-            }
-        }
-        public void listEmployees() {
-            if (employees.isEmpty()) {
-                System.out.println("No employees available.");
-            } else {
-                employees.forEach(System.out::println);
-            }
-        }
-
-        private Employee findEmployeeById(String empId) {
-            for (Employee employee : employees) {
-                if (employee.getEmpId() .equals(empId) ) {
-                    return employee;
-                }
-            }
-            return null;
-        }
-    }
-    static class EmployeeException extends Exception {
-        public EmployeeException(String message) {
-            super(message);
-        }
-    }*/
 }
