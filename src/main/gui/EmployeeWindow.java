@@ -1,5 +1,4 @@
 package gui;
-
 import javax.swing.*;
 import services.Bank;
 import models.user.Employee;
@@ -131,7 +130,6 @@ public class EmployeeWindow extends JFrame {
             }
         }
     }
-
     private void deleteClientAcc(){
         JTextField usernameField = makeTextField();
         JPasswordField passwordField = makePasswordField();
@@ -179,6 +177,197 @@ public class EmployeeWindow extends JFrame {
             }
         }
     }
+    private void editClientInfo(){}
+    private void editPersonalInfo() {
+        // Save the old values of the address and position for the confirmation message
+        String oldAddress = employee.getAddress();
+        String oldPosition = employee.getPosition();
+
+        JTextField addressField = makeTextField();
+        JTextField positionField = makeTextField();
+
+        // Set initial values from the employee
+        addressField.setText(oldAddress);
+        positionField.setText(oldPosition);
+
+        Object[] fields = {
+                "Enter new address:", addressField,
+                "Enter new position:", positionField
+        };
+        int response = JOptionPane.OK_OPTION;
+
+        while (response != JOptionPane.CANCEL_OPTION && response != JOptionPane.CLOSED_OPTION) {
+            response = JOptionPane.showConfirmDialog(
+                    this,
+                    fields,
+                    "Edit Personal Information",
+                    JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.PLAIN_MESSAGE
+            );
+
+            if (response == JOptionPane.OK_OPTION) {
+                // Get values from the fields
+                String newAddress = addressField.getText();
+                String newPosition = positionField.getText();
+
+                // Validation: Check if both fields are filled in
+                if (newAddress.isEmpty() || newPosition.isEmpty()) {
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "Both address and position must be provided.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                } else {
+                    try {
+                        // Set new address and position for the employee
+                        employee.setAddress(newAddress);
+                        employee.setPosition(newPosition);
+                        StringBuilder confirmationMessage = new StringBuilder("Personal information updated successfully.\n\n");
+
+                        if (!oldAddress.equals(newAddress)) {
+                            confirmationMessage.append("Address changed from: ").append(oldAddress)
+                                    .append(" to: ").append(newAddress).append("\n");
+                        }
+                        if (!oldPosition.equals(newPosition)) {
+                            confirmationMessage.append("Position changed from: ").append(oldPosition)
+                                    .append(" to: ").append(newPosition).append("\n");
+                        }
+                        // Display the confirmation message in the functionOutputArea
+                        functionOutputArea.setText("");
+                        functionOutputArea.append(confirmationMessage.toString());
+                        return;
+                    }
+                    catch (Exception ex) {
+                        // Handle any exception
+                        JOptionPane.showMessageDialog(
+                                this,
+                                ex.getMessage(),
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE
+                        );
+                        continue;
+                    }
+                }
+            }
+        }
+    }
+    private void searchClient() {
+        // Create radio buttons for selecting the search type
+        JRadioButton searchByNameButton = new JRadioButton("Search by Name");
+        JRadioButton searchByNumberButton = new JRadioButton("Search by Account Number");
+        ButtonGroup searchGroup = new ButtonGroup();
+        searchGroup.add(searchByNameButton);
+        searchGroup.add(searchByNumberButton);
+
+        Object[] initialFields = {
+                "Select search type:", searchByNameButton, searchByNumberButton
+        };
+
+        // First dialog to choose the search type
+        int initialResponse = JOptionPane.showConfirmDialog(
+                this,
+                initialFields,
+                "Select Search Type",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE
+        );
+
+        if (initialResponse == JOptionPane.OK_OPTION) {
+            if (!searchByNameButton.isSelected() && !searchByNumberButton.isSelected()) {
+                JOptionPane.showMessageDialog(this,
+                        "Please select a search type (Name or Account Number).",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return; // Exit if no selection is made
+            }
+
+            // Create a text field for input based on the selected search type
+            JTextField inputField = makeTextField();
+            // If searching by account number, only allow numeric input
+            if (searchByNumberButton.isSelected()) {
+                // Set a DocumentFilter to only allow numeric input for account number
+                ((AbstractDocument) inputField.getDocument()).setDocumentFilter(new DocumentFilter() {
+                    @Override
+                    public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+                        if (string != null && string.matches("\\d*")) {  // Only allow digits
+                            super.insertString(fb, offset, string, attr);
+                        }
+                    }
+
+                    @Override
+                    public void replace(FilterBypass fb, int offset, int length, String string, AttributeSet attr) throws BadLocationException {
+                        if (string != null && string.matches("\\d*")) {  // Only allow digits
+                            super.replace(fb, offset, length, string, attr);
+                        }
+                    }
+                });
+            }
+            String searchPrompt = searchByNameButton.isSelected() ? "Enter client name:" : "Enter account number:";
+            Object[] inputFields = {
+                    searchPrompt, inputField
+            };
+
+            // Second dialog to enter the search value
+            int inputResponse = JOptionPane.showConfirmDialog(
+                    this,
+                    inputFields,
+                    "Enter Search Value",
+                    JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.PLAIN_MESSAGE
+            );
+
+            if (inputResponse == JOptionPane.OK_OPTION) {
+                String input = inputField.getText();
+
+                // Validate input
+                if (input.isEmpty()) {
+                    JOptionPane.showMessageDialog(this,
+                            "Please provide a value for the search.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return; // Exit if no value is provided
+                }
+
+                // Handle searching by name
+                Client client = null;
+                if (searchByNameButton.isSelected()) {
+                    functionOutputArea.append("Searching by name...\n");
+                    // Client client = bank.getClientByName(input); // Replace with actual method to search by name
+                    if (client == null) {
+                        // add logic
+                        JOptionPane.showMessageDialog(this,
+                                "No client found with the name: " + input,
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+
+                // Handle searching by account number
+                else if (searchByNumberButton.isSelected()) {
+                    if (!input.matches("\\d+")) { // Ensure account number is numeric
+                        JOptionPane.showMessageDialog(this,
+                                "Account number must be numeric.",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                        return; // Exit if invalid input is provided
+                    }
+
+                    functionOutputArea.append("Searching by account number...\n");
+                    // client = bank.getClientById(input);
+                    // add logic
+                    if (client == null) {
+                        JOptionPane.showMessageDialog(this,
+                                "No client found with the account number: " + input,
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+        }
+    }
+
+
 
     private boolean deleteAccount(String username, String password) {
         //deletion logic @yousef
@@ -217,7 +406,7 @@ public class EmployeeWindow extends JFrame {
 
 
     private JPanel getJPanel() {
-        JPanel buttonPanel = new JPanel(new GridLayout(2,2,5,5));
+        JPanel buttonPanel = new JPanel(new GridLayout(3,2,5,5));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 8, 20));
 
 
@@ -225,7 +414,8 @@ public class EmployeeWindow extends JFrame {
                 new JButton("Edit Personal Information"),
                 new JButton("Create Client Account"),
                 new JButton("Search for Client"),
-                new JButton("Delete Client Account")
+                new JButton("Delete Client Account"),
+                new JButton("Edit Client Information")
         };
 
         for (JButton button : buttons) {
@@ -238,25 +428,23 @@ public class EmployeeWindow extends JFrame {
                 if (button.getText().equals("Edit Personal Information")) {
                     functionOutputArea.setText("");
                     functionOutputArea.append("Edit info selected\n");
-                    // Implement edit information logic
+                    editPersonalInfo();
 
-                }
-
-                else if (button.getText().equals("Create Client Account")) {
+                } else if (button.getText().equals("Create Client Account")) {
                     functionOutputArea.setText("");
                     createClientAcc();
-                }
-
-                else if (button.getText().equals("Search for Client")) {
+                } else if (button.getText().equals("Search for Client")) {
                     functionOutputArea.setText("");
                     functionOutputArea.append("Search selected\n");
-                    // Implement client search logic
-                }
-
-                else if (button.getText().equals("Delete Client Account")) {
+                    searchClient();
+                } else if (button.getText().equals("Delete Client Account")) {
                     functionOutputArea.setText("");
                     functionOutputArea.append("Delete Client selected\n");
                     deleteClientAcc();
+                } else if (button.getText().equals("Edit Client Information")) {
+                    functionOutputArea.setText("");
+                    functionOutputArea.append("Edit Client Information selected\n");
+                    editClientInfo();
                 }
             });
 
