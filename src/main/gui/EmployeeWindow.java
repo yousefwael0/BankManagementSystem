@@ -177,7 +177,121 @@ public class EmployeeWindow extends JFrame {
             }
         }
     }
-    private void editClientInfo(){}
+    private void editClientInfo() {
+        JTextField usernameField = makeTextField();
+        JTextField balanceField = makeNumericField();
+        JTextField interestRateField = makeNumericField();
+        JComboBox<String> statusComboBox = comboBox("Active", "Inactive");
+
+        Object[] searchFields = {
+                "Enter client's username to edit:", usernameField
+        };
+
+        Object[] editFields = {
+                "Edit Client Information:",
+                "Enter new balance:", balanceField,
+                "Enter new interest rate:", interestRateField,
+                "Select account status:", statusComboBox
+        };
+
+        //  Search for the client
+        int searchResponse = JOptionPane.showConfirmDialog(
+                this,
+                searchFields,
+                "Search Client to Edit",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE
+        );
+
+        if (searchResponse == JOptionPane.OK_OPTION) {
+            String username = usernameField.getText();
+
+            if (username.isEmpty()) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Please enter a username to search for the client.",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                );
+                return;
+            }
+
+            // dummy logic
+            String dummyUsername = "menna";
+            double dummyBalance = 1000.0;
+            double dummyInterestRate = 1.5;
+            String dummyStatus = "Active";
+
+            if (!username.equals(dummyUsername)) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "No client found with the username: " + username,
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                );
+                return;
+            }
+
+            //Prompt for editing client information
+            int editResponse = JOptionPane.OK_OPTION;
+
+            while (editResponse != JOptionPane.CANCEL_OPTION && editResponse != JOptionPane.CLOSED_OPTION) {
+                editResponse = JOptionPane.showConfirmDialog(
+                        this,
+                        editFields,
+                        "Edit Client Information",
+                        JOptionPane.OK_CANCEL_OPTION,
+                        JOptionPane.PLAIN_MESSAGE
+                );
+
+                if (editResponse == JOptionPane.OK_OPTION) {
+                    String balance = balanceField.getText();
+                    String interestRate = interestRateField.getText();
+                    String status = (String) statusComboBox.getSelectedItem();
+
+                    // Validate inputs
+                    if (balance.isEmpty() || interestRate.isEmpty() || status == null) {
+                        JOptionPane.showMessageDialog(
+                                this,
+                                "All fields must be filled. Please provide valid information.",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE
+                        );
+                    } else {
+                        try {
+                            // numeric inputs
+                            double newBalance = Double.parseDouble(balance);
+                            double newInterestRate = Double.parseDouble(interestRate);
+
+                            // updating client information
+                            dummyBalance = newBalance;
+                            dummyInterestRate = newInterestRate;
+                            dummyStatus = status;
+
+                            JOptionPane.showMessageDialog(
+                                    this,
+                                    "Client information updated successfully.\n" +
+                                            "Username: " + dummyUsername + "\n" +
+                                            "New Balance: " + dummyBalance + "\n" +
+                                            "New Interest Rate: " + dummyInterestRate + "\n" +
+                                            "New Status: " + dummyStatus,
+                                    "Success",
+                                    JOptionPane.INFORMATION_MESSAGE
+                            );
+                            return;
+                        } catch (NumberFormatException ex) {
+                            JOptionPane.showMessageDialog(
+                                    this,
+                                    "Please enter valid numeric values for balance and interest rate.",
+                                    "Error",
+                                    JOptionPane.ERROR_MESSAGE
+                            );
+                        }
+                    }
+                }
+            }
+        }
+    }
     private void editPersonalInfo() {
         // Save the old values of the address and position for the confirmation message
         String oldAddress = employee.getAddress();
@@ -367,16 +481,12 @@ public class EmployeeWindow extends JFrame {
         }
     }
 
-
-
     private boolean deleteAccount(String username, String password) {
         //deletion logic @yousef
         String storedUsername = "nour";
         String storedPassword = "nour1234";
         return username.equals(storedUsername) && password.equals(storedPassword);
     }
-
-
 
     public EmployeeWindow(Bank bank, Employee employee) {
         this.bank = bank;
@@ -403,7 +513,6 @@ public class EmployeeWindow extends JFrame {
 
         setLocationRelativeTo(null); // Center the window
     }
-
 
     private JPanel getJPanel() {
         JPanel buttonPanel = new JPanel(new GridLayout(3,2,5,5));
@@ -452,4 +561,5 @@ public class EmployeeWindow extends JFrame {
         }
         return buttonPanel;
     }
+
 }
