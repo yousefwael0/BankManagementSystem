@@ -1,6 +1,7 @@
 package gui;
 import javax.swing.*;
 
+import models.account.Account;
 import models.account.CurrentAccount;
 import models.account.SavingsAccount;
 import services.Bank;
@@ -118,7 +119,7 @@ public class EmployeeWindow extends JFrame {
                 }
                 else {
                     try {
-                        //el logic bta3 el add account. @yousef
+                        // Done
                         Client client = bank.getClientByUsername(username);
                         if (accountType.equals("Savings")) {
                             client.addAccount(new SavingsAccount(Double.parseDouble(balance), Double.parseDouble(intrestRate), client.userId));
@@ -146,6 +147,10 @@ public class EmployeeWindow extends JFrame {
         }
     }
     private void deleteClientAcc(){
+        // This function should take more input to be able to identify the account to be deleted for which client
+        // it already has username and password
+        // a field for account number should be added for searching in the accounts list for the given client
+
         JTextField usernameField = makeTextField();
         JPasswordField passwordField = makePasswordField();
         Object[] fields2 = {
@@ -175,7 +180,7 @@ public class EmployeeWindow extends JFrame {
                             JOptionPane.ERROR_MESSAGE);
                 }
                 else{
-                    boolean accountDeleted = deleteAccount(username, password);
+                    boolean accountDeleted = deleteAccount(username, password); // Add the account number to the function
                     if (accountDeleted) {
                         JOptionPane.showMessageDialog(this,
                                 "Account deleted successfully!",
@@ -232,12 +237,19 @@ public class EmployeeWindow extends JFrame {
             }
 
             // dummy logic
-            String dummyUsername = "menna";
+            // Done
+            Client client;
+           /* String dummyUsername = "menna";
             double dummyBalance = 1000.0;
             double dummyInterestRate = 1.5;
-            String dummyStatus = "Active";
+            String dummyStatus = "Active";*/
+            try{
+                client = bank.getClientByUsername(username);
+            } catch (IllegalArgumentException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
 
-            if (!username.equals(dummyUsername)) {
+            /*if (!username.equals(dummyUsername)) {
                 JOptionPane.showMessageDialog(
                         this,
                         "No client found with the username: " + username,
@@ -245,7 +257,7 @@ public class EmployeeWindow extends JFrame {
                         JOptionPane.ERROR_MESSAGE
                 );
                 return;
-            }
+            }*/
 
             //Prompt for editing client information
             int editResponse = JOptionPane.OK_OPTION;
@@ -274,7 +286,12 @@ public class EmployeeWindow extends JFrame {
                         );
                     } else {
                         try {
-                            // numeric inputs
+                            // editing client info takes different attributes from his account
+                            // it takes (Map<String, String> changes) a map of strings to change
+                            // firstName, lastName, username, password, phoneNumber
+                            // the gui can be implemented similar to the edit personal info function
+
+                            /*// numeric inputs
                             double newBalance = Double.parseDouble(balance);
                             double newInterestRate = Double.parseDouble(interestRate);
 
@@ -293,7 +310,7 @@ public class EmployeeWindow extends JFrame {
                                     "Success",
                                     JOptionPane.INFORMATION_MESSAGE
                             );
-                            return;
+                            return;*/
                         } catch (NumberFormatException ex) {
                             JOptionPane.showMessageDialog(
                                     this,
@@ -308,6 +325,7 @@ public class EmployeeWindow extends JFrame {
         }
     }
     private void editPersonalInfo() {
+        // Flawless.
         // Save the old values of the address and position for the confirmation message
         String oldAddress = employee.getAddress();
         String oldPosition = employee.getPosition();
@@ -381,6 +399,7 @@ public class EmployeeWindow extends JFrame {
             }
         }
     }
+
     private void searchClient() {
         // Create radio buttons for selecting the search type
         JRadioButton searchByNameButton = new JRadioButton("Search by Name");
@@ -463,6 +482,12 @@ public class EmployeeWindow extends JFrame {
                 if (searchByNameButton.isSelected()) {
                     functionOutputArea.append("Searching by name...\n");
                     // Client client = bank.getClientByName(input); // Replace with actual method to search by name
+                    // Done but add the gui to display the client's info
+                    try{
+                        client = bank.getClientByUsername(input);
+                    } catch(IllegalArgumentException ex){
+                        JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                     if (client == null) {
                         // add logic
                         JOptionPane.showMessageDialog(this,
@@ -484,7 +509,16 @@ public class EmployeeWindow extends JFrame {
 
                     functionOutputArea.append("Searching by account number...\n");
                     // client = bank.getClientById(input);
-                    // add logic
+                    // Done but add gui to display the client's info
+                    try{
+                        for (Account account : bank.getAccounts()) {
+                            if (account.accountNumber.equals(input)) {
+                                client = bank.getClientById(account.clientId);
+                            }
+                        }
+                    } catch(IllegalArgumentException ex){
+                        JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                     if (client == null) {
                         JOptionPane.showMessageDialog(this,
                                 "No client found with the account number: " + input,
@@ -496,11 +530,16 @@ public class EmployeeWindow extends JFrame {
         }
     }
 
-    private boolean deleteAccount(String username, String password) {
+    private boolean deleteAccount(String username, String password, String accountNumber) {
         //deletion logic @yousef
-        String storedUsername = "nour";
+        /*String storedUsername = "nour";
         String storedPassword = "nour1234";
-        return username.equals(storedUsername) && password.equals(storedPassword);
+        return username.equals(storedUsername) && password.equals(storedPassword);*/
+        try{
+            Client client = bank.getClientByUsername(username);
+        } catch (IllegalArgumentException ex){
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public EmployeeWindow(Bank bank, Employee employee) {
