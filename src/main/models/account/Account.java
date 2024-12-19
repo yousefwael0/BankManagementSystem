@@ -112,6 +112,10 @@ public abstract class Account {
         creditCard = new CreditCard(this.accountNumber, this.clientId, true);
     }
 
+    public static void setCounter(int counter) {
+        Account.counter = counter;
+    }
+
     @Override
     public String toString() {
         return "Account Number: " + this.accountNumber + ", Balance: " + this.balance + ", Status: " + this.status;

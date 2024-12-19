@@ -1,5 +1,6 @@
 package services;
 
+import models.account.Account;
 import models.account.Transaction;
 import models.user.Admin;
 import models.user.Client;
@@ -142,5 +143,13 @@ public class Bank {
             }
         }
         return transactionsByEmp;
+    }
+
+    public List<Account> getAccounts(){
+        List<Account> accounts = new ArrayList<>();
+        for (Client client : clients) {
+            accounts.addAll(client.getAccounts());
+        }
+        return accounts;
     }
 }
