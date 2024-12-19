@@ -1,9 +1,17 @@
 package gui;
 import javax.swing.*;
+
+import models.account.CurrentAccount;
+import models.account.SavingsAccount;
 import services.Bank;
 import models.user.Employee;
 import models.user.Client;
+import services.FileManager;
+import models.user.Client;
+
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Objects;
 import javax.swing.*;
 import javax.swing.text.AbstractDocument;
@@ -98,9 +106,9 @@ public class EmployeeWindow extends JFrame {
                 String password = new String(passwordField.getPassword());
                 String accountType = (String) accountTypeField .getSelectedItem();
                 String balance = balanceField.getText();
-                String interest_rate = interestRfield.getText();
+                String intrestRate = interestRfield.getText();
 
-                if (username.isEmpty() || password.isEmpty() || accountType == null || balance.isEmpty() || interest_rate.isEmpty()) {
+                if (username.isEmpty() || password.isEmpty() || accountType == null || balance.isEmpty() || intrestRate.isEmpty()) {
                     JOptionPane.showMessageDialog(
                             this,
                             "All fields must be filled in. Please provide valid information for all fields.",
@@ -111,6 +119,13 @@ public class EmployeeWindow extends JFrame {
                 else {
                     try {
                         //el logic bta3 el add account. @yousef
+                        Client client = bank.getClientByUsername(username);
+                        if (accountType.equals("Savings")) {
+                            client.addAccount(new SavingsAccount(Double.parseDouble(balance), Double.parseDouble(intrestRate), client.userId));
+                        }
+                        else if (accountType.equals("Current")) {
+                            client.addAccount(new CurrentAccount(Double.parseDouble(balance), client.userId));
+                        }
                         JOptionPane.showMessageDialog(
                                 this,
                                 "New client Account created successfully.",
@@ -511,7 +526,30 @@ public class EmployeeWindow extends JFrame {
 
         add(scrollPane, BorderLayout.CENTER);
 
+        // Add a WindowListener to handle the close button
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                // Save data
+                saveData();
+                System.exit(0); // Exit the program
+            }
+        });
+
         setLocationRelativeTo(null); // Center the window
+    }
+
+    private void saveData() {
+        try {
+            // Save clients and employees to their respective files
+            String clientsFilePath = "src/main/data/clients.json";
+            String employeesFilePath = "src/main/data/employees.json";
+
+            FileManager.saveToJson(clientsFilePath, bank.getClients());
+            FileManager.saveToJson(employeesFilePath, bank.getEmployees());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error saving data: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private JPanel getJPanel() {
