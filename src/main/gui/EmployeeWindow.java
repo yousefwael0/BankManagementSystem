@@ -153,9 +153,13 @@ public class EmployeeWindow extends JFrame {
 
         JTextField usernameField = makeTextField();
         JPasswordField passwordField = makePasswordField();
+        JTextField accountNumField = makeNumericField();
+
+
         Object[] fields2 = {
+                "Enter client's Account Number:", accountNumField,
                 "Enter client's username:", usernameField,
-                "Enter client's password:", passwordField,
+                "Enter client's password:", passwordField
 
         };
         int response2 = JOptionPane.OK_OPTION;
@@ -172,6 +176,7 @@ public class EmployeeWindow extends JFrame {
             if (response2 == JOptionPane.OK_OPTION){
                 String username = usernameField.getText();
                 String password = passwordField.getText();
+                String accountNumber = accountNumField.getText();
 
                 if (username.isEmpty() || password.isEmpty()){
                     JOptionPane.showMessageDialog(this,
@@ -180,7 +185,7 @@ public class EmployeeWindow extends JFrame {
                             JOptionPane.ERROR_MESSAGE);
                 }
                 else{
-                    boolean accountDeleted = deleteAccount(username, password); // Add the account number to the function
+                    boolean accountDeleted = deleteAccount(username, password, accountNumber); // Add the account number to the function
                     if (accountDeleted) {
                         JOptionPane.showMessageDialog(this,
                                 "Account deleted successfully!",
@@ -532,10 +537,7 @@ public class EmployeeWindow extends JFrame {
 
     private boolean deleteAccount(String username, String password, String accountNumber) {
         //deletion logic @yousef
-        /*String storedUsername = "nour";
-        String storedPassword = "nour1234";
-        return username.equals(storedUsername) && password.equals(storedPassword);*/
-        try{
+       try{
             Client client = bank.getClientByUsername(username);
         } catch (IllegalArgumentException ex){
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
