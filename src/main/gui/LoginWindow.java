@@ -67,6 +67,16 @@ public class LoginWindow extends JFrame {
         });
         buttonPanel.add(loginButton);
         add(buttonPanel, BorderLayout.SOUTH);
+
+        // Trigger login when Enter is pressed in the password field
+        passwordField.addActionListener(e -> loginButton.doClick());
+
+        // Trigger login when Enter is pressed on the login button
+        loginButton.addActionListener(e -> {
+            String username = usernameField.getText();
+            String password = new String(passwordField.getPassword());
+            authenticateUser(username, password);
+        });
     }
 
     private void authenticateUser(String username, String password) {
