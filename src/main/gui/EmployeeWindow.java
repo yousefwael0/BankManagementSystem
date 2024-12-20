@@ -545,19 +545,10 @@ public class EmployeeWindow extends JFrame {
                     // Client client = bank.getClientByName(input); // Replace with actual method to search by name
                     // Done but add the gui to display the client's info
                     try{
-                        client = bank.getClientByUsername(input);
+                        client = bank.getClientByName(input);
+                        displayClientInfo(client);
                     } catch(IllegalArgumentException ex){
                         JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                    }
-                    if (client == null) {
-                        // add logic
-                        JOptionPane.showMessageDialog(this,
-                                "No client found with the name: " + input,
-                                "Error",
-                                JOptionPane.ERROR_MESSAGE);
-                    }
-                    else {
-                        displayClientInfo(client);
                     }
                 }
 
