@@ -503,7 +503,7 @@ public class EmployeeWindow extends JFrame {
                     // client = bank.getClientByNumber(input);
                     // Done but add gui to display the client's info
 
-                    try{ // here conflict in search @yousef
+                    try{
                         for (Account account : bank.getAccounts()) {
                             if (account.accountNumber.equals(input)) {
                                 client = bank.getClientById(account.clientId);
