@@ -502,7 +502,8 @@ public class EmployeeWindow extends JFrame {
                     functionOutputArea.append("Searching by account Number...\n");
                     // client = bank.getClientByNumber(input);
                     // Done but add gui to display the client's info
-                    try{
+
+                    try{ // here conflict in search @yousef
                         for (Account account : bank.getAccounts()) {
                             if (account.accountNumber.equals(input)) {
                                 client = bank.getClientById(account.clientId);
