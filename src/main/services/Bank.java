@@ -33,13 +33,13 @@ public class Bank {
         }
         throw new IllegalArgumentException("Client with id " + id + " not found.");
     }
-    public Client getClientByUsername(String username){
+    public Client getClientByUsername(String username, String password){
         for (Client client : clients){
-            if (username.equals(client.getUsername())){
+            if (username.equals(client.getUsername()) && password.equals(client.getPassword())){
                 return client;
             }
         }
-        throw new IllegalArgumentException("Client with username " + username + " not found.");
+        throw new IllegalArgumentException("Client with username " + username + " and password " + password + " not found.");
     }
     public Client getClientByName(String name){
         try{
