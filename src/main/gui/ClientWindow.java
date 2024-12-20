@@ -1,77 +1,63 @@
 package gui;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import services.Bank;
 import models.user.Client;
 import models.account.Account;
-import gui.LoginWindow;
+import models.account.CreditCard;
 import java.awt.*;
-import java.util.HashMap;
 import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 public class ClientWindow extends JFrame {
-    private final Bank bank;
-    private final Client client;
-    private final JPanel mainPanel;
+    private Bank bank;
+    private Client client;
 
     public ClientWindow(Bank bank, Client client) {
         this.bank = bank;
         this.client = client;
 
         // Window setup
-        setTitle("Client Dashboard - Welcome " + client.getFirstName());
-        setSize(500, 400);
+        setTitle("Client Dashboard");
+        setSize(400, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new GridLayout(7, 1));
 
-        // Create main panel with padding
-        mainPanel = new JPanel();
-        mainPanel.setLayout(new GridBagLayout());
-        mainPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
+        // Client options
+        JButton editInfoButton = new JButton("Edit Personal Information");
+        JButton viewAccountButton = new JButton("View Account Details");
+        JButton transactionHistoryButton = new JButton("View Transaction History");
+        JButton depositButton = new JButton("Deposit Money");
+        JButton transferButton = new JButton("Transfer Money");
+        JButton creditCardButton = new JButton("Ask for Credit Card");
+        JButton paycreditCardButton = new JButton(" Pay With Credit Card");
+        JButton discreditCardButton = new JButton(" Disable Credit Card");
+        JButton logoutButton = new JButton("Logout");
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridwidth = GridBagConstraints.REMAINDER;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(5, 0, 5, 0);
+        // Add listeners to buttons
+        editInfoButton.addActionListener(e -> showEditInfoDialog());
+        viewAccountButton.addActionListener(e -> showAccountDetails());
+        transactionHistoryButton.addActionListener(e -> showTransactionHistory());
+        depositButton.addActionListener(e -> showDepositDialog());
+        transferButton.addActionListener(e -> showTransferDialog());
+        creditCardButton.addActionListener(e -> showCreditCardDialog());
+        paycreditCardButton.addActionListener(e -> showpayCreditCardDialog());
+        discreditCardButton.addActionListener(e -> showdisCreditCardDialog());
+        logoutButton.addActionListener(e -> logout());
 
-        // Create buttons with custom styling
-        JButton[] buttons = {
-                createStyledButton("Edit Personal Information", "Edit your profile details"),
-                createStyledButton("View Account Details", "Check your account balance and information"),
-                createStyledButton("View Transaction History", "See your recent transactions"),
-                createStyledButton("Deposit Money", "Add funds to your account"),
-                createStyledButton("Transfer Money", "Send money to another account"),
-                createStyledButton("CreditCard", "create new CreditCard"),
-                createStyledButton("Logout", "logging out")
-        };
+        // Add buttons to the window
+        add(editInfoButton);
+        add(viewAccountButton);
+        add(transactionHistoryButton);
+        add(depositButton);
+        add(transferButton);
+        add(creditCardButton);
+        add(paycreditCardButton);
+        add(discreditCardButton);
+        add(logoutButton);
 
-        // Add action listeners
-        buttons[0].addActionListener(e -> showEditInfoDialog());
-        buttons[1].addActionListener(e -> showAccountDetails());
-        buttons[2].addActionListener(e -> showTransactionHistory());
-        buttons[3].addActionListener(e -> showDepositDialog());
-        buttons[4].addActionListener(e -> showTransferDialog());
-        buttons[5].addActionListener(e -> showCreditCard());
-        buttons[6].addActionListener(e -> showLogout());
-        // Add buttons to panel
-        for (JButton button : buttons) {
-            mainPanel.add(button, gbc);
-        }
-
-        // Add main panel to frame
-        add(mainPanel);
-        setLocationRelativeTo(null);
-    }
-
-    private JButton createStyledButton(String text, String tooltip) {
-        JButton button = new JButton(text);
-        button.setToolTipText(tooltip);
-        button.setPreferredSize(new Dimension(300, 50));
-        button.setFont(new Font("Arial", Font.PLAIN, 14));
-        button.setBackground(new Color(240, 240, 240));
-        button.setFocusPainted(false);
-        return button;
+        setLocationRelativeTo(null); // Center the window
     }
 
     private void showEditInfoDialog() {
@@ -109,8 +95,6 @@ public class ClientWindow extends JFrame {
         dialog.setVisible(true);
     }
 
-    // ... (previous imports remain the same)
-
     private void showAccountDetails() {
         List<Account> accounts = client.getAccounts();
         if (accounts.isEmpty()) {
@@ -125,15 +109,13 @@ public class ClientWindow extends JFrame {
             Balance: $%.2f
             Account Type: %s
             """,
-                account.accountNumber,  // Direct field access
-                account.getBalance(),   // Using getter
-                account.accountType);   // Direct field access
+                account.accountNumber,
+                account.getBalance(),
+                account.accountType);
 
         JOptionPane.showMessageDialog(this, details, "Account Details",
                 JOptionPane.INFORMATION_MESSAGE);
     }
-
-// ... (rest of ClientWindow.java remains the same)
 
     private void showTransactionHistory() {
         JDialog dialog = new JDialog(this, "Transaction History", true);
@@ -209,26 +191,21 @@ public class ClientWindow extends JFrame {
         JTextField amountField = new JTextField();
         dialog.add(amountField);
 
-        dialog.add(new JLabel("Account:"));
-        JTextField accountField = new JTextField();
-        dialog.add(accountField);
+        dialog.add(new JLabel("Recipient Account:"));
+        JTextField recipientField = new JTextField();
+        dialog.add(recipientField);
 
         JButton transferButton = new JButton("Transfer");
         transferButton.addActionListener(e -> {
             try {
                 double amount = Double.parseDouble(amountField.getText());
+                String recipientAccount = recipientField.getText();
+
                 Account sourceAccount = accounts.get(0);
+                // bank.transfer(sourceAccount, recipientAccount, amount);
 
-                if (amount <= 0) {
-                    throw new IllegalArgumentException("Amount must be positive");
-                }
-                if (amount > sourceAccount.getBalance()) {
-                    throw new IllegalArgumentException("Insufficient funds");
-                }
-
-                sourceAccount.withdraw(amount);
                 dialog.dispose();
-                JOptionPane.showMessageDialog(this, String.format("Successfully transferred " + amount + " to " + accounts  ));
+                JOptionPane.showMessageDialog(this, String.format("Successfully transferred $%.2f to %s", amount, recipientAccount));
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(dialog,
                         "Please enter a valid amount",
@@ -246,21 +223,57 @@ public class ClientWindow extends JFrame {
         dialog.setVisible(true);
     }
 
-    private void showLogout() {
-        new LoginWindow(bank).setVisible(true);
-        this.dispose();
-    }
-
-
-    private void showCreditCard()  {
-        JDialog dialog = new JDialog(this, "CreditCard", true);
-        dialog.setSize(300, 250);
-        dialog.setLayout(new GridLayout(4, 2, 10, 10));
+    private void showCreditCardDialog() {
+        JDialog dialog = new JDialog(this, "Credit Card", true);
+        dialog.setSize(300, 200);
+        dialog.setLayout(new GridLayout(2, 1, 10, 10));
         dialog.setLocationRelativeTo(this);
-         //comment
 
+        //CreditCard creditCard = client.getCreditCard();
+
+        JButton closeButton = new JButton("Close");
+        closeButton.addActionListener(e -> dialog.dispose());
+        dialog.add(closeButton);
+
+        dialog.setVisible(true);
     }
 
 
+    private void showpayCreditCardDialog() {
+        JDialog dialog = new JDialog(this, "Credit Card", true);
+        dialog.setSize(300, 200);
+        dialog.setLayout(new GridLayout(2, 1, 10, 10));
+        dialog.setLocationRelativeTo(this);
 
+
+        JButton closeButton = new JButton("Close");
+        closeButton.addActionListener(e -> dialog.dispose());
+        dialog.add(closeButton);
+
+        dialog.setVisible(true);
+    }
+
+    private void showdisCreditCardDialog() {
+        JDialog dialog = new JDialog(this, "Credit Card", true);
+        dialog.setSize(300, 200);
+        dialog.setLayout(new GridLayout(2, 1, 10, 10));
+        dialog.setLocationRelativeTo(this);
+
+
+
+        JButton closeButton = new JButton("Close");
+        closeButton.addActionListener(e -> dialog.dispose());
+        dialog.add(closeButton);
+
+        dialog.setVisible(true);
+    }
+
+    private void logout() {
+        JOptionPane.showMessageDialog(this, "You have been logged out.");
+        this.dispose();
+        new LoginWindow(bank).setVisible(true);
+    }
 }
+
+
+
