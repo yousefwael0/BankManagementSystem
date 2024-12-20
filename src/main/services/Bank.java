@@ -25,6 +25,14 @@ public class Bank {
 
     // Getters
     public List<Client> getClients() {return clients;}
+    public Client getClient(String username, String password) {
+        for (Client client : clients) {
+            if (client.getUsername().equals(username) && client.getPassword().equals(password)) {
+                return client;
+            }
+        }
+        throw new IllegalArgumentException("Username or password is incorrect");
+    }
     public Client getClientById(String id){
         for (Client client : clients){
             if (id.equals(client.userId)){
@@ -33,13 +41,13 @@ public class Bank {
         }
         throw new IllegalArgumentException("Client with id " + id + " not found.");
     }
-    public Client getClientByUsername(String username, String password){
+    public Client getClientByUsername(String username){
         for (Client client : clients){
-            if (username.equals(client.getUsername()) && password.equals(client.getPassword())){
+            if (username.equals(client.getUsername())){
                 return client;
             }
         }
-        throw new IllegalArgumentException("Client with username " + username + " and password " + password + " not found.");
+        throw new IllegalArgumentException("Client with username " + username + " not found.");
     }
     public Client getClientByName(String name){
         try{
