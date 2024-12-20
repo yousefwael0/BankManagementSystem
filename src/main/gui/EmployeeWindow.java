@@ -79,6 +79,70 @@ public class EmployeeWindow extends JFrame {
         return comboBox;
     }
 
+    private void createClient(){
+               JTextField firstNameField = makeTextField();
+               JTextField lastNameField = makeTextField();
+               JTextField usernameField = makeTextField();
+               JPasswordField passwordField = makePasswordField();
+               JTextField phonenumberField = makeTextField();
+
+               Object[] fields3 = {
+                       "Enter Client's First Name: ", firstNameField,
+                       "Enter Client's Last Name: ", lastNameField,
+                       "Enter Client's Phone Number: ", phonenumberField,
+                       "Client's Username: ", usernameField,
+                       "Client's Password: ", passwordField
+               };
+
+               int response = JOptionPane.OK_OPTION;
+
+               while (response != JOptionPane.CANCEL_OPTION && response != JOptionPane.CLOSED_OPTION){
+                   response = JOptionPane.showConfirmDialog(this,
+                           fields3,
+                           "Create New Client",
+                           JOptionPane.OK_CANCEL_OPTION,
+                           JOptionPane.PLAIN_MESSAGE);
+
+                   if (response == JOptionPane.OK_OPTION){
+                       String firstName = firstNameField.getText();
+                       String lastName = lastNameField.getText();
+                       String PhoneNumber = phonenumberField.getText();
+                       String userName = usernameField.getText();
+                       String password = new String(passwordField.getPassword());
+
+                       if (userName.isEmpty() || password.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || PhoneNumber.isEmpty()){
+                           JOptionPane.showMessageDialog(
+                                   this,
+                                   "All fields must be filled in. Please provide valid information for all fields.",
+                                   "Error",
+                                   JOptionPane.ERROR_MESSAGE
+                           );
+                       }
+                       else{
+                           try{
+                               //logic el create new client
+                              Client client = new Client(firstName, lastName, userName, password, PhoneNumber);
+                              bank.addClient(client);
+                               JOptionPane.showMessageDialog(
+                                       this,
+                                       "New client created successfully.",
+                                       "Success",
+                                       JOptionPane.INFORMATION_MESSAGE);
+                               return;
+                           }catch(IllegalArgumentException exp){
+                               JOptionPane.showMessageDialog(
+                                       this,
+                                       exp.getMessage(),
+                                       "Error",
+                                       JOptionPane.ERROR_MESSAGE
+                               );
+                               continue;
+                           }
+                       }
+                   }
+               }
+    }
+
     private void createClientAcc() {
         JTextField usernameField = makeTextField();
         JPasswordField passwordField = makePasswordField();
@@ -415,6 +479,7 @@ public class EmployeeWindow extends JFrame {
             }
         }
     }
+
     private void searchClient() {
         // Create radio buttons for selecting the search type
         JRadioButton searchByNameButton = new JRadioButton("Search by Name");
@@ -525,10 +590,12 @@ public class EmployeeWindow extends JFrame {
             }
         }
     }
+
     private boolean deleteAccount(String username, String password, String accountNumber) {
         //deletion logic @yousef
         try {
             Client client = bank.getClientByUsername(username);
+         //logic el delete ya yousef basha
             return true;
         } catch (IllegalArgumentException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -542,6 +609,7 @@ public class EmployeeWindow extends JFrame {
                 "Client Details",
                 JOptionPane.INFORMATION_MESSAGE);
     }
+
     public EmployeeWindow(Bank bank, Employee employee) {
         this.bank = bank;
         this.employee = employee;
@@ -599,12 +667,13 @@ public class EmployeeWindow extends JFrame {
         this.dispose();
     }
     private JPanel getJPanel() {
-        JPanel buttonPanel = new JPanel(new GridLayout(3,2,5,5));
+        JPanel buttonPanel = new JPanel(new GridLayout(4,2,5,5));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 8, 20));
 
 
         JButton[] buttons = {
                 new JButton("Edit Personal Information"),
+                new JButton("Create Client"),
                 new JButton("Create Client Account"),
                 new JButton("Search for Client"),
                 new JButton("Delete Client Account"),
@@ -621,23 +690,23 @@ public class EmployeeWindow extends JFrame {
 
                 if (button.getText().equals("Edit Personal Information")) {
                     functionOutputArea.setText("");
-                    functionOutputArea.append("Edit info selected\n");
                     editPersonalInfo();
 
-                } else if (button.getText().equals("Create Client Account")) {
+                }else if (button.getText().equals("Create Client Account")) {
                     functionOutputArea.setText("");
-                    createClientAcc();
+                     createClientAcc();
+                } else if (button.getText().equals("Create Client")) {
+                    functionOutputArea.setText("");
+                    createClient();
+
                 } else if (button.getText().equals("Search for Client")) {
                     functionOutputArea.setText("");
-                    functionOutputArea.append("Search selected\n");
                     searchClient();
                 } else if (button.getText().equals("Delete Client Account")) {
                     functionOutputArea.setText("");
-                    functionOutputArea.append("Delete Client selected\n");
                     deleteClientAcc();
                 } else if (button.getText().equals("Edit Client Information")) {
                     functionOutputArea.setText("");
-                    functionOutputArea.append("Edit Client Information selected\n");
                     editClientInfo();
                 }
                 else if (button.getText().equals("Log Out")){
