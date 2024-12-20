@@ -51,8 +51,14 @@ public class Client extends User{
         transactions.add(transaction);
     }
 
-    public List<Account> getAccounts() {
-        return accounts;
+    public List<Account> getAccounts() {return accounts;}
+    public Account getAccount(String accountNumber){
+        for (Account account : accounts) {
+            if (accountNumber.equals(account.accountNumber)){
+                return account;
+            }
+        }
+        throw new IllegalArgumentException("Account with number " + accountNumber + " not found");
     }
     public LoyaltyPoints getLoyaltyPoints() {
         return loyaltyPoints;
