@@ -14,6 +14,8 @@ import gui.LoginWindow;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import javax.swing.*;
 import javax.swing.text.AbstractDocument;
@@ -213,14 +215,12 @@ public class EmployeeWindow extends JFrame {
         Object[] searchFields = {
                 "Enter client's username to edit:", usernameField
         };
-
         Object[] editFields = {
                 "Edit Client Information:",
                 "Enter new balance:", balanceField,
                 "Enter new interest rate:", interestRateField,
                 "Select account status:", statusComboBox
         };
-
         //  Search for the client
         int searchResponse = JOptionPane.showConfirmDialog(
                 this,
@@ -229,10 +229,8 @@ public class EmployeeWindow extends JFrame {
                 JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.PLAIN_MESSAGE
         );
-
         if (searchResponse == JOptionPane.OK_OPTION) {
             String username = usernameField.getText();
-
             if (username.isEmpty()) {
                 JOptionPane.showMessageDialog(
                         this,
@@ -242,30 +240,13 @@ public class EmployeeWindow extends JFrame {
                 );
                 return;
             }
-
-            // dummy logic
-            // Done
             Client client;
-           /* String dummyUsername = "menna";
-            double dummyBalance = 1000.0;
-            double dummyInterestRate = 1.5;
-            String dummyStatus = "Active";*/
-            try{
+            try {
                 client = bank.getClientByUsername(username);
             } catch (IllegalArgumentException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
-
-            /*if (!username.equals(dummyUsername)) {
-                JOptionPane.showMessageDialog(
-                        this,
-                        "No client found with the username: " + username,
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE
-                );
                 return;
-            }*/
-
+            }
             //Prompt for editing client information
             int editResponse = JOptionPane.OK_OPTION;
 
@@ -292,32 +273,45 @@ public class EmployeeWindow extends JFrame {
                                 JOptionPane.ERROR_MESSAGE
                         );
                     } else {
+
                         try {
-                            // editing client info takes different attributes from his account
-                            // it takes (Map<String, String> changes) a map of strings to change
-                            // firstName, lastName, username, password, phoneNumber
-                            // the gui can be implemented similar to the edit personal info function
 
-                            /*// numeric inputs
-                            double newBalance = Double.parseDouble(balance);
-                            double newInterestRate = Double.parseDouble(interestRate);
+                            // Compare current values with new input values
+                          /*  boolean isSameBalance = balance.equals(String.valueOf(client.getBalance()));
+                            boolean isSameInterestRate = interestRate.equals(String.valueOf(client.getInterestRate()));
+                            boolean isSameStatus = status.equals(client.getStatus());
 
-                            // updating client information
-                            dummyBalance = newBalance;
-                            dummyInterestRate = newInterestRate;
-                            dummyStatus = status;
+                            if (isSameBalance && isSameInterestRate && isSameStatus) {
+                                JOptionPane.showMessageDialog(
+                                        this,
+                                        "No changes were made. The information entered is the same as the current data.",
+                                        "No Changes",
+                                        JOptionPane.INFORMATION_MESSAGE
+                                );
+                                return; // Exit without making any changes
+                            }*/
+
+                            // Creating a map to hold the changes
+                            Map<String, String> changes = new HashMap<>();
+                            // Add changes to the map
+                            changes.put("balance", balance);
+                            changes.put("interestRate", interestRate);
+                            changes.put("status", status);
+                            // Assuming the client object has a method to update information based on the changes map
+                            // client.updateClientInfo(changes);
 
                             JOptionPane.showMessageDialog(
                                     this,
                                     "Client information updated successfully.\n" +
-                                            "Username: " + dummyUsername + "\n" +
-                                            "New Balance: " + dummyBalance + "\n" +
-                                            "New Interest Rate: " + dummyInterestRate + "\n" +
-                                            "New Status: " + dummyStatus,
+                                            "Username: " + client.getUsername() + "\n" +
+                                            "New Balance: " + balance + "\n" +
+                                            "New Interest Rate: " + interestRate + "\n" +
+                                            "New Status: " + status,
                                     "Success",
                                     JOptionPane.INFORMATION_MESSAGE
                             );
-                            return;*/
+                            return;
+
                         } catch (NumberFormatException ex) {
                             JOptionPane.showMessageDialog(
                                     this,
@@ -325,9 +319,24 @@ public class EmployeeWindow extends JFrame {
                                     "Error",
                                     JOptionPane.ERROR_MESSAGE
                             );
+                        } catch (Exception ex) {
+                            JOptionPane.showMessageDialog(
+                                    this,
+                                    "An error occurred while updating the client information: " + ex.getMessage(),
+                                    "Error",
+                                    JOptionPane.ERROR_MESSAGE
+                            );
                         }
                     }
                 }
+                // editing client info takes different attributes from his account
+                // it takes (Map<String, String> changes) a map of strings to change
+                // firstName, lastName, username, password, phoneNumber
+                // the gui can be implemented similar to the edit personal info function
+
+
+
+
             }
         }
     }
@@ -406,7 +415,6 @@ public class EmployeeWindow extends JFrame {
             }
         }
     }
-
     private void searchClient() {
         // Create radio buttons for selecting the search type
         JRadioButton searchByNameButton = new JRadioButton("Search by Name");
@@ -439,25 +447,6 @@ public class EmployeeWindow extends JFrame {
 
             // Create a text field for input based on the selected search type
             JTextField inputField = makeTextField();
-            // If searching by account number, only allow numeric input
-            if (searchByNumberButton.isSelected()) {
-                // Set a DocumentFilter to only allow numeric input for account number
-                ((AbstractDocument) inputField.getDocument()).setDocumentFilter(new DocumentFilter() {
-                    @Override
-                    public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
-                        if (string != null && string.matches("\\d*")) {  // Only allow digits
-                            super.insertString(fb, offset, string, attr);
-                        }
-                    }
-
-                    @Override
-                    public void replace(FilterBypass fb, int offset, int length, String string, AttributeSet attr) throws BadLocationException {
-                        if (string != null && string.matches("\\d*")) {  // Only allow digits
-                            super.replace(fb, offset, length, string, attr);
-                        }
-                    }
-                });
-            }
             String searchPrompt = searchByNameButton.isSelected() ? "Enter client name:" : "Enter account number:";
             Object[] inputFields = {
                     searchPrompt, inputField
@@ -502,20 +491,16 @@ public class EmployeeWindow extends JFrame {
                                 "Error",
                                 JOptionPane.ERROR_MESSAGE);
                     }
+                    else {
+                        displayClientInfo(client);
+                    }
                 }
 
                 // Handle searching by account number
                 else if (searchByNumberButton.isSelected()) {
-                    if (!input.matches("\\d+")) { // Ensure account number is numeric
-                        JOptionPane.showMessageDialog(this,
-                                "Account number must be numeric.",
-                                "Error",
-                                JOptionPane.ERROR_MESSAGE);
-                        return; // Exit if invalid input is provided
-                    }
 
-                    functionOutputArea.append("Searching by account number...\n");
-                    // client = bank.getClientById(input);
+                    functionOutputArea.append("Searching by account Number...\n");
+                    // client = bank.getClientByNumber(input);
                     // Done but add gui to display the client's info
                     try{
                         for (Account account : bank.getAccounts()) {
@@ -532,23 +517,30 @@ public class EmployeeWindow extends JFrame {
                                 "Error",
                                 JOptionPane.ERROR_MESSAGE);
                     }
+                    else {
+                        displayClientInfo(client);
+                    }
                 }
             }
         }
     }
-
     private boolean deleteAccount(String username, String password, String accountNumber) {
         //deletion logic @yousef
-       try{
+        try {
             Client client = bank.getClientByUsername(username);
             return true;
-        } catch (IllegalArgumentException ex){
+        } catch (IllegalArgumentException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
     }
-
+    private void displayClientInfo(Client client) {
+        JOptionPane.showMessageDialog(this,
+                "Client Info: \n" + client.toString(),
+                "Client Details",
+                JOptionPane.INFORMATION_MESSAGE);
+    }
     public EmployeeWindow(Bank bank, Employee employee) {
         this.bank = bank;
         this.employee = employee;
@@ -595,7 +587,10 @@ public class EmployeeWindow extends JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error saving data: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
+
     }
+
+
 
     private void logout() {
         saveData();
