@@ -42,14 +42,18 @@ public class Bank {
         throw new IllegalArgumentException("Client with username " + username + " not found.");
     }
     public Client getClientByName(String name){
-        String firstName = name.trim().substring(0, name.indexOf(" "));
-        String lastName = name.trim().substring(name.indexOf(" ") + 1);
-        for (Client client : clients){
-            if (firstName.equals(client.getFirstName()) && lastName.equals(client.getLastName())){
-                return client;
+        try{
+            String firstName = name.trim().substring(0, name.indexOf(" "));
+            String lastName = name.trim().substring(name.indexOf(" ") + 1);
+            for (Client client : clients){
+                if (firstName.equals(client.getFirstName()) && lastName.equals(client.getLastName())){
+                    return client;
+                }
             }
+            throw new IllegalArgumentException("Client with name " + name + " not found.");
+        } catch (StringIndexOutOfBoundsException e){
+            throw new IllegalArgumentException("Please enter first name and last name.");
         }
-        throw new IllegalArgumentException("Client with name " + name + " not found.");
     }
 
     public List<Employee> getEmployees() {return employees;}
