@@ -46,19 +46,19 @@ public class AdminWindow extends JFrame {
 
     private void initializeComponents() {
         // Panel for buttons
-        JPanel buttonPanel = new JPanel(new GridLayout(2, 3));
+        JPanel buttonPanel = new JPanel(new GridLayout(2, 2));
 
         // Button to open authorization dialog
         openAuthDialogButton = getButton("Authorize Employee");
         openAuthDialogButton.addActionListener(e -> openAuthorizationDialog());
         buttonPanel.add(openAuthDialogButton);
 
-        // Button to view employees
+        // Button to view all employees
         viewEmployeesButton = getButton("View Employees");
         viewEmployeesButton.addActionListener(e -> displayEmployees());
         buttonPanel.add(viewEmployeesButton);
 
-        // Button to view clients
+        // Button to view all clients
         viewClientsButton = getButton("View Clients");
         viewClientsButton.addActionListener(e -> displayClients());
         buttonPanel.add(viewClientsButton);
@@ -68,6 +68,7 @@ public class AdminWindow extends JFrame {
         showTransactionsButton.addActionListener(e -> showTransactions());
         buttonPanel.add(showTransactionsButton);
 
+        // Button to Create new Employee
         createEmployeeButton = getButton("Create Employee");
         createEmployeeButton.addActionListener(e -> openCreateEmployeeDialog());
         buttonPanel.add(createEmployeeButton);
@@ -199,43 +200,35 @@ public class AdminWindow extends JFrame {
 
     // Method to open the employee authorization dialog
     private void openAuthorizationDialog() {
-        JDialog dialog = new JDialog(this, "Authorize Employee", true);
-        dialog.setSize(400, 200);
-        dialog.setLayout(new GridLayout(4, 2));
-        dialog.setLocationRelativeTo(this);
 
         // Fields for username and password
         JTextField usernameField = new JTextField();
         JPasswordField passwordField = new JPasswordField();
 
-        dialog.add(new JLabel("Username:"));
-        dialog.add(usernameField);
-        dialog.add(new JLabel("Password:"));
-        dialog.add(passwordField);
+        Object[] fields = {"Username: ", usernameField,
+                            "Password: ", passwordField
+        };
 
-        // Authorize button
-        JButton authorizeButton = new JButton("Authorize");
-        authorizeButton.addActionListener(e -> {
-            String username = usernameField.getText();
-            String password = new String(passwordField.getPassword());
+        int response;
+        do{
+            response = JOptionPane.showConfirmDialog(this, fields, "Authorize Employee", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+            if(response == JOptionPane.OK_OPTION){
+                String username = usernameField.getText();
+                String password = new String(passwordField.getPassword());
 
-            if (username.isEmpty() || password.isEmpty()) {
-                JOptionPane.showMessageDialog(dialog, "Please fill in all fields.");
-                return;
+                if (username.isEmpty() || password.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
+                    continue;
+                }
+                try {
+                    bank.authorizeEmployee(bank.getEmployeeByUsername(username));
+                    JOptionPane.showMessageDialog(this, "Employee authorized successfully.");
+                    break;
+                } catch (IllegalArgumentException ex) {
+                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
-
-            try {
-                bank.authorizeEmployee(bank.getEmployeeByUsername(username));
-                JOptionPane.showMessageDialog(dialog, "Employee authorized successfully.");
-                dialog.dispose();
-            } catch (IllegalArgumentException ex) {
-                JOptionPane.showMessageDialog(dialog, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        });
-        dialog.add(new JLabel()); // Spacer
-        dialog.add(authorizeButton);
-
-        dialog.setVisible(true);
+        } while (response == JOptionPane.OK_OPTION);
     }
 
     // Create Employee Button
