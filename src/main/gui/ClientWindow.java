@@ -257,7 +257,7 @@ public class ClientWindow extends JFrame {
         dialog.setSize(300, 250);
         dialog.setLayout(new GridLayout(4, 2, 10, 10));
         dialog.setLocationRelativeTo(this);
-
+         //comment
 
     }
 
