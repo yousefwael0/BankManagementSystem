@@ -156,7 +156,7 @@ public class EmployeeWindow extends JFrame {
 
         JTextField usernameField = makeTextField();
         JPasswordField passwordField = makePasswordField();
-        JTextField accountNumField = makeNumericField();
+        JTextField accountNumField = makeTextField();
 
 
         Object[] fields2 = {
