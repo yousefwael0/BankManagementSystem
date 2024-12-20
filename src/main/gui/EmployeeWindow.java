@@ -9,6 +9,7 @@ import models.user.Employee;
 import models.user.Client;
 import services.FileManager;
 import models.user.Client;
+import gui.LoginWindow;
 
 import java.awt.*;
 import java.awt.event.WindowAdapter;
@@ -202,6 +203,7 @@ public class EmployeeWindow extends JFrame {
             }
         }
     }
+
     private void editClientInfo() {
         JTextField usernameField = makeTextField();
         JTextField balanceField = makeNumericField();
@@ -539,15 +541,17 @@ public class EmployeeWindow extends JFrame {
         //deletion logic @yousef
        try{
             Client client = bank.getClientByUsername(username);
+            return true;
         } catch (IllegalArgumentException ex){
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
         }
+
     }
 
     public EmployeeWindow(Bank bank, Employee employee) {
         this.bank = bank;
         this.employee = employee;
-
 
         setTitle("Employee Dashboard");
         setSize(600, 500);
@@ -593,6 +597,11 @@ public class EmployeeWindow extends JFrame {
         }
     }
 
+    private void logout() {
+        saveData();
+        new LoginWindow(bank).setVisible(true);
+        this.dispose();
+    }
     private JPanel getJPanel() {
         JPanel buttonPanel = new JPanel(new GridLayout(3,2,5,5));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 8, 20));
@@ -603,7 +612,8 @@ public class EmployeeWindow extends JFrame {
                 new JButton("Create Client Account"),
                 new JButton("Search for Client"),
                 new JButton("Delete Client Account"),
-                new JButton("Edit Client Information")
+                new JButton("Edit Client Information"),
+                new JButton("Log Out")
         };
 
         for (JButton button : buttons) {
@@ -633,6 +643,9 @@ public class EmployeeWindow extends JFrame {
                     functionOutputArea.setText("");
                     functionOutputArea.append("Edit Client Information selected\n");
                     editClientInfo();
+                }
+                else if (button.getText().equals("Log Out")){
+                   logout();
                 }
             });
 
