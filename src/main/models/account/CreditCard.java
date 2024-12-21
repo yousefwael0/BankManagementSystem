@@ -24,7 +24,7 @@ public class CreditCard {
     public CreditCard() {
         this.cardNumber = "CC" + String.format("%03d", counter++);
         this.accountNumber = "ACCOUNT NUMBER";
-        this.client = new Client();
+        this.client = null;
         this.isActive = false;
     }
 
