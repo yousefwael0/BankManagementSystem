@@ -9,19 +9,19 @@ public abstract class Account {
     private double balance;
     private String status; // Active or Closed
     private double interestRate;
-    public Client client;
+    private String clientId;
     private CreditCard creditCard;
     private static int counter = 1;
 
     // Constructors
-    public Account(String accountType, double balance,double interestRate, Client client, CreditCard creditCard)  throws IllegalArgumentException {
+    public Account(String accountType, double balance,double interestRate, String clientId, CreditCard creditCard)  throws IllegalArgumentException {
         if (balance < 0) {
             throw new IllegalArgumentException("Initial balance cannot be negative");
         }
         if (interestRate < 0) {
             throw new IllegalArgumentException("Interest rate cannot be negative");
         }
-        if (client == null) {
+        if (clientId == null) {
             throw new IllegalArgumentException("Client cannot be empty");
         }
         this.accountNumber = generateAccountNumber();
@@ -29,7 +29,7 @@ public abstract class Account {
         this.balance = balance;
         this.status ="Active";
         this.interestRate = interestRate;
-        this.client = client;
+        this.clientId = clientId;
         this.creditCard = creditCard;
     }
     public Account() {
@@ -37,7 +37,7 @@ public abstract class Account {
         this.balance = 0;
         this.status = "Active";
         this.interestRate = 0;
-        this.client = new Client();
+        this.clientId = "";
         this.creditCard = new CreditCard();
         this.accountType = "ACCOUNT TYPE";
     }
@@ -59,9 +59,11 @@ public abstract class Account {
         this.interestRate = interestRate;
     }
 
-    public Client getClient() {
-        return client;
+    public String getClientId() {
+        return clientId;
     }
+
+    public CreditCard getCreditCard() {return creditCard;}
 
     private void checkAccountActive() throws IllegalArgumentException {
         if ("Closed".equals(status)) {
@@ -120,7 +122,7 @@ public abstract class Account {
         if (creditCard != null) {
             throw new IllegalArgumentException("Credit card already exists for this account");
         }
-        creditCard = new CreditCard(this.accountNumber, this.client, true);
+        //creditCard = new CreditCard(this.accountNumber, this.client, true);
     }
 
     public static void setCounter(int counter) {
