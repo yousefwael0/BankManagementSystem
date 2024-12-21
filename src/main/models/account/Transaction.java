@@ -22,7 +22,7 @@ public class Transaction {
     public Transaction() {
         this.transactionId = "T" + String.format("%03d", counter++);
         this.date = LocalDateTime.now();
-        this.type = "TYPE";
+        this.type = null;
         this.amount = 0;
         this.clientId = null;
     }

@@ -3,9 +3,9 @@ package models.account;
 import models.user.Client;
 
 public class SavingsAccount extends Account {
-    public SavingsAccount(double balance, double interestRate, Client client)
+    public SavingsAccount(double balance, double interestRate, String clientId)
             throws IllegalArgumentException {
-        super("SAVINGS", balance, interestRate, client, null);
+        super("SAVINGS", balance, interestRate, clientId, null);
     }
     public SavingsAccount(){
         super();
