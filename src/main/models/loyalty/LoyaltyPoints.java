@@ -4,11 +4,15 @@ import models.user.Client;
 
 public class LoyaltyPoints {
     private int points;
-    public final Client client;
+    public Client client;
 
     public LoyaltyPoints(Client client) {
         this.client = client;
         this.points = 0;  // Start with 0 points
+    }
+    public LoyaltyPoints() {
+        this.points = 0;
+        this.client = null;
     }
 
     public int getPoints() {

@@ -4,12 +4,12 @@ package models.account;
 import models.user.Client;
 
 public abstract class Account {
-    public final String accountNumber;
-    public final String accountType; // Savings or Current
+    public String accountNumber;
+    public String accountType; // Savings or Current
     private double balance;
     private String status; // Active or Closed
     private double interestRate;
-    public final Client client;
+    public Client client;
     private CreditCard creditCard;
     private static int counter = 1;
 
@@ -31,6 +31,15 @@ public abstract class Account {
         this.interestRate = interestRate;
         this.client = client;
         this.creditCard = creditCard;
+    }
+    public Account() {
+        this.accountNumber = generateAccountNumber();
+        this.balance = 0;
+        this.status = "Active";
+        this.interestRate = 0;
+        this.client = new Client();
+        this.creditCard = new CreditCard();
+        this.accountType = "ACCOUNT TYPE";
     }
 
     // Getters / Setters

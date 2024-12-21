@@ -10,6 +10,9 @@ public class CurrentAccount extends Account {
     public CurrentAccount(double balance, Client client) throws IllegalArgumentException {
         super("CURRENT", balance, 0.0, client, null);
     }
+    public CurrentAccount() {
+        super();
+    }
 
     public void checkMinimumBalance() throws IllegalArgumentException {
         if (getBalance() < MINIMUM_BALANCE) {

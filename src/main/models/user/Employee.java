@@ -7,9 +7,9 @@ public class Employee extends User{
     private boolean isActive = false;
     private String address;
     private String position;
-    public final String graduatedCollege;
-    public final String totalGrade;
-    public final int  yearOfGraduation;
+    public String graduatedCollege;
+    public String totalGrade;
+    public int  yearOfGraduation;
 
     // Constructor
     public Employee(String firstName, String lastName, String address, String position, String username, String password,
@@ -32,6 +32,14 @@ public class Employee extends User{
         if (yearOfGraduation < 1900 || yearOfGraduation > 2023)
             throw new IllegalArgumentException("Year of Graduation must be between 1900 and 2023!");
         this.yearOfGraduation = yearOfGraduation;
+    }
+    public Employee() {
+        super();
+        this.address = "ADDRESS";
+        this.position = "POSITION";
+        this.totalGrade = "GRADE";
+        this.graduatedCollege = "COLLEGE OF GRADE";
+        this.yearOfGraduation = 2000;
     }
 
     // Getters
