@@ -68,7 +68,6 @@ class AccountAdapter implements JsonSerializer<Account>, JsonDeserializer<Accoun
         jsonObject.addProperty("balance", account.getBalance());
         jsonObject.addProperty("status", account.getStatus());
         jsonObject.addProperty("interestRate", account.getInterestRate());
-        jsonObject.addProperty("clientId", account.getClientId());  // Serialize clientId
         return jsonObject;
     }
 

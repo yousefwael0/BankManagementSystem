@@ -200,7 +200,6 @@ public class AdminWindow extends JFrame {
         model.addColumn("Type");
         model.addColumn("Date");
         model.addColumn("Client ID");
-        model.addColumn("Employee ID");
 
         for (Transaction transaction : transactions) {
             model.addRow(new Object[]{
@@ -209,7 +208,6 @@ public class AdminWindow extends JFrame {
                     transaction.getType(),
                     transaction.getDate(),
                     transaction.clientId,
-                    transaction.getEmployeeId()
             });
         }
 

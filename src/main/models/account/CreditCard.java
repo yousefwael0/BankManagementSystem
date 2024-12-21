@@ -1,19 +1,23 @@
 package models.account;
 
 
+import models.user.Client;
+
 public class CreditCard {
     public final String cardNumber;
     private double limit=20000;
     private boolean isActive;
     public final String accountNumber;
-    public final String clientId;
+    public final Client client;
     private static int counter = 1;
-    //private Account account
 
-    public CreditCard(String accountNumber, String clientId, boolean isActive) {
+    public CreditCard(String accountNumber, Client client, boolean isActive) {
         this.cardNumber = "CC" + String.format("%03d", counter++);
+        if (accountNumber.isEmpty()|| client==null) {
+            throw new IllegalArgumentException("AccountNumber and Client cannot be empty");
+        }
         this.accountNumber = accountNumber;
-        this.clientId = clientId;
+        this.client = client;
         this.isActive = isActive;
     }
 
@@ -25,8 +29,8 @@ public class CreditCard {
 
         //Check if Card is active and amount is less than limit
         if (isActive && amount <= limit) {
-            System.out.println("Payment Successful :)");
             limit -= amount;
+            client.earnLoyaltyPoints((int) Math.round(amount * 0.25));
         } else if (!isActive) {
             throw new IllegalArgumentException("Card is not active!");
         } else if (amount > limit) {
@@ -40,12 +44,18 @@ public class CreditCard {
     }
 
     public void disableCard(String cardNumber){
-        isActive= false;
-        System.out.println("Card disabled");
+        if (isActive){
+            isActive=false;
+        }else {
+            throw new IllegalArgumentException("Card already disabled");
+        }
     }
 
     public void activateCard(){
-        isActive= true;
-        System.out.println("Card activated");
+        if (!isActive){
+            isActive=true;
+        }else {
+            throw new IllegalArgumentException("Card is already active");
+        }
     }
 }
