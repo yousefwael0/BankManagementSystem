@@ -8,21 +8,17 @@ import services.Bank;
 import models.user.Employee;
 import models.user.Client;
 import services.FileManager;
-import models.user.Client;
-import gui.LoginWindow;
 
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-import javax.swing.*;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
-import java.awt.*;
+
 
 public class EmployeeWindow extends JFrame {
     private Bank bank;
@@ -79,6 +75,70 @@ public class EmployeeWindow extends JFrame {
         return comboBox;
     }
 
+    private void createClient(){
+               JTextField firstNameField = makeTextField();
+               JTextField lastNameField = makeTextField();
+               JTextField usernameField = makeTextField();
+               JPasswordField passwordField = makePasswordField();
+               JTextField phonenumberField = makeTextField();
+
+               Object[] fields3 = {
+                       "Enter Client's First Name: ", firstNameField,
+                       "Enter Client's Last Name: ", lastNameField,
+                       "Enter Client's Phone Number: ", phonenumberField,
+                       "Client's Username: ", usernameField,
+                       "Client's Password: ", passwordField
+               };
+
+               int response = JOptionPane.OK_OPTION;
+
+               while (response != JOptionPane.CANCEL_OPTION && response != JOptionPane.CLOSED_OPTION){
+                   response = JOptionPane.showConfirmDialog(this,
+                           fields3,
+                           "Create New Client",
+                           JOptionPane.OK_CANCEL_OPTION,
+                           JOptionPane.PLAIN_MESSAGE);
+
+                   if (response == JOptionPane.OK_OPTION){
+                       String firstName = firstNameField.getText();
+                       String lastName = lastNameField.getText();
+                       String PhoneNumber = phonenumberField.getText();
+                       String userName = usernameField.getText();
+                       String password = new String(passwordField.getPassword());
+
+                       if (userName.isEmpty() || password.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || PhoneNumber.isEmpty()){
+                           JOptionPane.showMessageDialog(
+                                   this,
+                                   "All fields must be filled in. Please provide valid information for all fields.",
+                                   "Error",
+                                   JOptionPane.ERROR_MESSAGE
+                           );
+                       }
+                       else{
+                           try{
+                               //logic el create new client
+                              Client client = new Client(firstName, lastName, userName, password, PhoneNumber);
+                              bank.addClient(client);
+                               JOptionPane.showMessageDialog(
+                                       this,
+                                       "New client created successfully.",
+                                       "Success",
+                                       JOptionPane.INFORMATION_MESSAGE);
+                               return;
+                           }catch(IllegalArgumentException exp){
+                               JOptionPane.showMessageDialog(
+                                       this,
+                                       exp.getMessage(),
+                                       "Error",
+                                       JOptionPane.ERROR_MESSAGE
+                               );
+                               continue;
+                           }
+                       }
+                   }
+               }
+    }
+
     private void createClientAcc() {
         JTextField usernameField = makeTextField();
         JPasswordField passwordField = makePasswordField();
@@ -125,10 +185,10 @@ public class EmployeeWindow extends JFrame {
                         // Done
                         Client client = bank.getClientByUsername(username);
                         if (accountType.equals("Savings")) {
-                            client.addAccount(new SavingsAccount(Double.parseDouble(balance), Double.parseDouble(intrestRate), client.userId));
+                            client.addAccount(new SavingsAccount(Double.parseDouble(balance), Double.parseDouble(intrestRate), client));
                         }
                         else if (accountType.equals("Current")) {
-                            client.addAccount(new CurrentAccount(Double.parseDouble(balance), client.userId));
+                            client.addAccount(new CurrentAccount(Double.parseDouble(balance), client));
                         }
                         JOptionPane.showMessageDialog(
                                 this,
@@ -143,27 +203,23 @@ public class EmployeeWindow extends JFrame {
                                 "Error",
                                 JOptionPane.ERROR_MESSAGE
                         );
-                        continue;
                     }
                 }
             }
         }
     }
+
     private void deleteClientAcc(){
-        // This function should take more input to be able to identify the account to be deleted for which client
-        // it already has username and password
-        // a field for account number should be added for searching in the accounts list for the given client
 
         JTextField usernameField = makeTextField();
         JPasswordField passwordField = makePasswordField();
-        JTextField accountNumField = makeNumericField();
+        JTextField accountNumField = makeTextField();
 
 
         Object[] fields2 = {
                 "Enter client's Account Number:", accountNumField,
                 "Enter client's username:", usernameField,
                 "Enter client's password:", passwordField
-
         };
         int response2 = JOptionPane.OK_OPTION;
 
@@ -188,18 +244,16 @@ public class EmployeeWindow extends JFrame {
                             JOptionPane.ERROR_MESSAGE);
                 }
                 else{
-                    boolean accountDeleted = deleteAccount(username, password, accountNumber); // Add the account number to the function
-                    if (accountDeleted) {
+                    try {
+                        Client client = bank.getClient(username, password);
+                        client.removeAccount(client.getAccount(accountNumber));
                         JOptionPane.showMessageDialog(this,
                                 "Account deleted successfully!",
                                 "Success",
                                 JOptionPane.INFORMATION_MESSAGE);
                         return;
-                    } else {
-                        JOptionPane.showMessageDialog(this,
-                                "Account deletion failed. Invalid credentials.",
-                                "Error",
-                                JOptionPane.ERROR_MESSAGE);
+                    } catch (IllegalArgumentException ex) {
+                        JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
             }
@@ -207,19 +261,22 @@ public class EmployeeWindow extends JFrame {
     }
 
     private void editClientInfo() {
+        JTextField firstNameField = makeTextField();
+        JTextField lastNameField = makeTextField();
         JTextField usernameField = makeTextField();
-        JTextField balanceField = makeNumericField();
-        JTextField interestRateField = makeNumericField();
-        JComboBox<String> statusComboBox = comboBox("Active", "Inactive");
+        JPasswordField passwordField = makePasswordField();
+        JTextField phoneNumberField = makeTextField();
 
         Object[] searchFields = {
                 "Enter client's username to edit:", usernameField
         };
         Object[] editFields = {
                 "Edit Client Information:",
-                "Enter new balance:", balanceField,
-                "Enter new interest rate:", interestRateField,
-                "Select account status:", statusComboBox
+                "Enter new first name:", firstNameField,
+                "Enter new last name:", lastNameField,
+                "Enter new username:", usernameField,
+                "Enter new password:", passwordField,
+                "Enter new phone number:", phoneNumberField
         };
         //  Search for the client
         int searchResponse = JOptionPane.showConfirmDialog(
@@ -247,6 +304,13 @@ public class EmployeeWindow extends JFrame {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
+            // Setting initial values
+            firstNameField.setText(client.getFirstName());
+            lastNameField.setText(client.getLastName());
+            usernameField.setText(client.getUsername());
+            passwordField.setText(client.getPassword());
+            phoneNumberField.setText(client.getPhoneNumber());
+
             //Prompt for editing client information
             int editResponse = JOptionPane.OK_OPTION;
 
@@ -260,12 +324,14 @@ public class EmployeeWindow extends JFrame {
                 );
 
                 if (editResponse == JOptionPane.OK_OPTION) {
-                    String balance = balanceField.getText();
-                    String interestRate = interestRateField.getText();
-                    String status = (String) statusComboBox.getSelectedItem();
+                    String newFirstName = firstNameField.getText();
+                    String newLastName = lastNameField.getText();
+                    String newUsername = usernameField.getText();
+                    String newPassword = passwordField.getText();
+                    String newPhoneNumber = phoneNumberField.getText();
 
                     // Validate inputs
-                    if (balance.isEmpty() || interestRate.isEmpty() || status == null) {
+                    if (newFirstName.isEmpty() || newLastName.isEmpty() || newUsername.isEmpty() || newPassword.isEmpty() || newPhoneNumber.isEmpty()) {
                         JOptionPane.showMessageDialog(
                                 this,
                                 "All fields must be filled. Please provide valid information.",
@@ -275,38 +341,25 @@ public class EmployeeWindow extends JFrame {
                     } else {
 
                         try {
-
-                            // Compare current values with new input values
-                          /*  boolean isSameBalance = balance.equals(String.valueOf(client.getBalance()));
-                            boolean isSameInterestRate = interestRate.equals(String.valueOf(client.getInterestRate()));
-                            boolean isSameStatus = status.equals(client.getStatus());
-
-                            if (isSameBalance && isSameInterestRate && isSameStatus) {
-                                JOptionPane.showMessageDialog(
-                                        this,
-                                        "No changes were made. The information entered is the same as the current data.",
-                                        "No Changes",
-                                        JOptionPane.INFORMATION_MESSAGE
-                                );
-                                return; // Exit without making any changes
-                            }*/
-
                             // Creating a map to hold the changes
                             Map<String, String> changes = new HashMap<>();
-                            // Add changes to the map
-                            changes.put("balance", balance);
-                            changes.put("interestRate", interestRate);
-                            changes.put("status", status);
-                            // Assuming the client object has a method to update information based on the changes map
-                            // client.updateClientInfo(changes);
 
+                            // Add changes to the map
+                            changes.put("firstName", newFirstName);
+                            changes.put("lastName", newLastName);
+                            changes.put("username", newUsername);
+                            changes.put("password", newPassword);
+                            changes.put("phoneNumber", newPhoneNumber);
+                            // Assuming the client object has a method to update information based on the changes map
+                            client.editUserInfo(changes);
                             JOptionPane.showMessageDialog(
                                     this,
                                     "Client information updated successfully.\n" +
-                                            "Username: " + client.getUsername() + "\n" +
-                                            "New Balance: " + balance + "\n" +
-                                            "New Interest Rate: " + interestRate + "\n" +
-                                            "New Status: " + status,
+                                            "First Name: " + newFirstName + "\n" +
+                                            "Last Name: " + newLastName + "\n" +
+                                            "Username: " + newUsername + "\n" +
+                                            "Password: " + newPassword + "\n" +
+                                            "Phone Number: " + newPhoneNumber,
                                     "Success",
                                     JOptionPane.INFORMATION_MESSAGE
                             );
@@ -329,17 +382,10 @@ public class EmployeeWindow extends JFrame {
                         }
                     }
                 }
-                // editing client info takes different attributes from his account
-                // it takes (Map<String, String> changes) a map of strings to change
-                // firstName, lastName, username, password, phoneNumber
-                // the gui can be implemented similar to the edit personal info function
-
-
-
-
             }
         }
     }
+
     private void editPersonalInfo() {
         // Flawless.
         // Save the old values of the address and position for the confirmation message
@@ -415,6 +461,7 @@ public class EmployeeWindow extends JFrame {
             }
         }
     }
+
     private void searchClient() {
         // Create radio buttons for selecting the search type
         JRadioButton searchByNameButton = new JRadioButton("Search by Name");
@@ -480,19 +527,10 @@ public class EmployeeWindow extends JFrame {
                     // Client client = bank.getClientByName(input); // Replace with actual method to search by name
                     // Done but add the gui to display the client's info
                     try{
-                        client = bank.getClientByUsername(input);
+                        client = bank.getClientByName(input);
+                        displayClientInfo(client);
                     } catch(IllegalArgumentException ex){
                         JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                    }
-                    if (client == null) {
-                        // add logic
-                        JOptionPane.showMessageDialog(this,
-                                "No client found with the name: " + input,
-                                "Error",
-                                JOptionPane.ERROR_MESSAGE);
-                    }
-                    else {
-                        displayClientInfo(client);
                     }
                 }
 
@@ -506,7 +544,7 @@ public class EmployeeWindow extends JFrame {
                     try{
                         for (Account account : bank.getAccounts()) {
                             if (account.accountNumber.equals(input)) {
-                                client = bank.getClientById(account.clientId);
+                                client = account.getClient();
                             }
                         }
                     } catch(IllegalArgumentException ex){
@@ -525,23 +563,14 @@ public class EmployeeWindow extends JFrame {
             }
         }
     }
-    private boolean deleteAccount(String username, String password, String accountNumber) {
-        //deletion logic @yousef
-        try {
-            Client client = bank.getClientByUsername(username);
-            return true;
-        } catch (IllegalArgumentException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
 
-    }
     private void displayClientInfo(Client client) {
         JOptionPane.showMessageDialog(this,
                 "Client Info: \n" + client.toString(),
                 "Client Details",
                 JOptionPane.INFORMATION_MESSAGE);
     }
+
     public EmployeeWindow(Bank bank, Employee employee) {
         this.bank = bank;
         this.employee = employee;
@@ -588,23 +617,22 @@ public class EmployeeWindow extends JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error saving data: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-
     }
-
-
 
     private void logout() {
         saveData();
         new LoginWindow(bank).setVisible(true);
         this.dispose();
     }
+
     private JPanel getJPanel() {
-        JPanel buttonPanel = new JPanel(new GridLayout(3,2,5,5));
+        JPanel buttonPanel = new JPanel(new GridLayout(4,2,5,5));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 8, 20));
 
 
         JButton[] buttons = {
                 new JButton("Edit Personal Information"),
+                new JButton("Create Client"),
                 new JButton("Create Client Account"),
                 new JButton("Search for Client"),
                 new JButton("Delete Client Account"),
@@ -616,28 +644,27 @@ public class EmployeeWindow extends JFrame {
             button.setFont(new Font("Arial", Font.BOLD, 14));
             button.setPreferredSize(new Dimension(200, 40));
 
-
             button.addActionListener(e -> {
 
                 if (button.getText().equals("Edit Personal Information")) {
                     functionOutputArea.setText("");
-                    functionOutputArea.append("Edit info selected\n");
                     editPersonalInfo();
 
-                } else if (button.getText().equals("Create Client Account")) {
+                }else if (button.getText().equals("Create Client Account")) {
                     functionOutputArea.setText("");
-                    createClientAcc();
+                     createClientAcc();
+                } else if (button.getText().equals("Create Client")) {
+                    functionOutputArea.setText("");
+                    createClient();
+
                 } else if (button.getText().equals("Search for Client")) {
                     functionOutputArea.setText("");
-                    functionOutputArea.append("Search selected\n");
                     searchClient();
                 } else if (button.getText().equals("Delete Client Account")) {
                     functionOutputArea.setText("");
-                    functionOutputArea.append("Delete Client selected\n");
                     deleteClientAcc();
                 } else if (button.getText().equals("Edit Client Information")) {
                     functionOutputArea.setText("");
-                    functionOutputArea.append("Edit Client Information selected\n");
                     editClientInfo();
                 }
                 else if (button.getText().equals("Log Out")){
