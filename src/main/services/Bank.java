@@ -8,6 +8,7 @@ import models.user.Employee;
 import models.user.User;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -62,6 +63,16 @@ public class Bank {
         } catch (StringIndexOutOfBoundsException e){
             throw new IllegalArgumentException("Please enter first name and last name.");
         }
+    }
+    public Account getAccount(String accountNumber){
+        for (Client client : clients){
+            for (Account account : client.getAccounts()){
+                if (accountNumber.equals(account.accountNumber)){
+                    return account;
+                }
+            }
+        }
+        throw new IllegalArgumentException("Account number " + accountNumber + " not found.");
     }
 
     public List<Employee> getEmployees() {return employees;}
@@ -156,15 +167,14 @@ public class Bank {
         return client.getTransactionHistory();
     }
 
-    // Get transactions by employee
-    public List<Transaction> getTransactionsByEmployee(Employee employee) {
-        List<Transaction> transactionsByEmp = new ArrayList<>();
-        for (Transaction transaction : this.getTransactions()){
-            if (transaction.getEmployeeId().equals(employee.userId)){
-                transactionsByEmp.add(transaction);
-            }
+    public void transferMoney(Client client, String senderAccountNumber, String receiverAccountNumber, double amount) {
+        try{
+            client.getAccount(senderAccountNumber).withdraw(amount);
+            getAccount(receiverAccountNumber).deposit(amount);
+            client.addTransaction(new Transaction(LocalDateTime.now(), "TRANSFER", amount, client.userId));
+        } catch (Exception e){
+            throw new IllegalArgumentException(e.getMessage());
         }
-        return transactionsByEmp;
     }
 
     public List<Account> getAccounts(){

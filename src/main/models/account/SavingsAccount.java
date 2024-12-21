@@ -1,9 +1,11 @@
 package models.account;
 
+import models.user.Client;
+
 public class SavingsAccount extends Account {
-    public SavingsAccount(double balance, double interestRate, String clientId)
+    public SavingsAccount(double balance, double interestRate, Client client)
             throws IllegalArgumentException {
-        super("SAVINGS", balance, interestRate, clientId, null);
+        super("SAVINGS", balance, interestRate, client, null);
     }
 
     public double calculateInterest() {
