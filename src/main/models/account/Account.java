@@ -37,8 +37,8 @@ public abstract class Account {
         this.balance = 0;
         this.status = "Active";
         this.interestRate = 0;
-        this.client = null;
-        this.creditCard = null;
+        this.client = new Client();
+        this.creditCard = new CreditCard();
         this.accountType = "ACCOUNT TYPE";
     }
 
