@@ -443,8 +443,13 @@ public class EmployeeWindow extends JFrame {
                                     .append(" to: ").append(newPosition).append("\n");
                         }
                         // Display the confirmation message in the functionOutputArea
-                        functionOutputArea.setText("");
-                        functionOutputArea.append(confirmationMessage.toString());
+                        JOptionPane.showMessageDialog(
+                                this,
+                                confirmationMessage.toString(),
+                                "Success",
+                                JOptionPane.INFORMATION_MESSAGE
+                        );
+
                         return;
                     }
                     catch (Exception ex) {
