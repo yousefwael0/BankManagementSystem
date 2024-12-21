@@ -45,9 +45,13 @@ public class CreditCard {
         }
     }
 
+
     //Resetting limit
     public void resetLimit() {
-        limit=20000;
+        if(limit==20000)
+            throw new IllegalArgumentException("Limit is already reset!");
+        else
+             limit = 20000;
     }
 
     public void disableCard(String cardNumber){
