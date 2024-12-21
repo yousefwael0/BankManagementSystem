@@ -25,6 +25,12 @@ public class CreditCard {
         this.isActive = false;
     }
 
+    public String getCardNumber() {return cardNumber;}
+
+    public String getAccountNumber() {return accountNumber;}
+
+    public String getClientId() {return clientId;}
+
     public double getLimit() {
         return limit;
     }
