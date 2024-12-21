@@ -1,10 +1,13 @@
 package gui;
 
 import javax.swing.*;
+
+import models.account.CreditCard;
+import models.user.User;
 import services.Bank;
 import models.user.Client;
 import models.account.Account;
-import models.account.CreditCard;
+
 import java.awt.*;
 import java.util.List;
 import java.util.HashMap;
@@ -141,7 +144,7 @@ public class ClientWindow extends JFrame {
                     throw new IllegalArgumentException("Phone number cannot be empty");
                 }
 
-                // If all validations pass, proceed with saving
+
                 Map<String, String> changes = new HashMap<>();
                 changes.put("firstName", FirstNameField.getText().trim());
                 changes.put("lastName", LastNameField.getText().trim());
@@ -214,18 +217,18 @@ public class ClientWindow extends JFrame {
         dialog.setSize(600, 400);
         dialog.setLocationRelativeTo(this);
 
-        // Create main panel with BorderLayout
+
         JPanel mainPanel = new JPanel(new BorderLayout());
 
-        // Create filter panel
+
         JPanel filterPanel = new JPanel(new FlowLayout());
 
-        // Create text area for displaying transactions
+
         JTextArea historyArea = new JTextArea();
         historyArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(historyArea);
 
-        // Add "All Transactions" button
+
         JButton allTransactionsBtn = new JButton("All Transactions");
         allTransactionsBtn.addActionListener(e -> {
             StringBuilder history = new StringBuilder();
@@ -234,7 +237,7 @@ public class ClientWindow extends JFrame {
             historyArea.setText(history.toString());
         });
 
-        // Add date filter components
+
         JLabel dateLabel = new JLabel("Date (YYYY-MM-DD):");
         JTextField dateField = new JTextField(10);
         JButton dateFilterBtn = new JButton("Filter by Date");
@@ -253,20 +256,16 @@ public class ClientWindow extends JFrame {
             }
         });
 
-        // Add components to filter panel
         filterPanel.add(allTransactionsBtn);
         filterPanel.add(dateLabel);
         filterPanel.add(dateField);
         filterPanel.add(dateFilterBtn);
 
-        // Add components to main panel
         mainPanel.add(filterPanel, BorderLayout.NORTH);
         mainPanel.add(scrollPane, BorderLayout.CENTER);
 
-        // Add main panel to dialog
         dialog.add(mainPanel);
 
-        // Show all transactions initially
         StringBuilder history = new StringBuilder();
         getAllTransactions().forEach(transaction ->
                 history.append(transaction.toString()).append("\n"));
@@ -378,47 +377,151 @@ public class ClientWindow extends JFrame {
          dialog.setVisible(true);
      }
 
-     private void showCreditCardDialog () {
-         JDialog dialog = new JDialog(this, "Credit Card", true);
-         dialog.setSize(300, 200);
-         dialog.setLayout(new GridLayout(2, 1, 10, 10));
-         dialog.setLocationRelativeTo(this);
+
+    private void showCreditCardDialog () {
+        JDialog dialog = new JDialog(this, "Credit Card", true);
+        dialog.setSize(500, 400);
+        dialog.setLayout(new GridLayout(4, 1, 10, 10));
+        dialog.setLocationRelativeTo(this);
 
 
-        // Account AccountNumber =AccountNumberField.g
-         // client.getAccount(AccountNumber);
+        JLabel accountLabel = new JLabel("Enter Account Number:");
+        JTextField accountNumberField = new JTextField();
+        JButton requestButton = new JButton("Request Credit Card");
+        JButton closeButton = new JButton("Close");
 
-         JButton closeButton = new JButton("Close");
-         closeButton.addActionListener(e -> dialog.dispose());
-         dialog.add(closeButton);
-
-         dialog.setVisible(true);
-     }
-
-
-     private void showpayCreditCardDialog () {
-         JDialog dialog = new JDialog(this, "Credit Card", true);
-         dialog.setSize(300, 200);
-         dialog.setLayout(new GridLayout(2, 1, 10, 10));
-         dialog.setLocationRelativeTo(this);
+        // Add components to the dialog
+        dialog.add(accountLabel);
+        dialog.add(accountNumberField);
+        dialog.add(requestButton);
+        dialog.add(closeButton);
 
 
-         JButton closeButton = new JButton("Close");
-         closeButton.addActionListener(e -> dialog.dispose());
-         dialog.add(closeButton);
+        requestButton.addActionListener(e -> {
+            String accountNumber = accountNumberField.getText().trim();
 
-         dialog.setVisible(true);
-     }
+            try {
+                // Fetch the account using the client's getAccount method
+                Account account = client.getAccount(accountNumber);
+
+                // Call the askForCreditCard method on the account
+                account.askForCreditCard();
+
+                // Show success message
+                JOptionPane.showMessageDialog(dialog,
+                        "Credit Card requested successfully!",
+                        "Success",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } catch (IllegalArgumentException ex) {
+                // Show error message
+                JOptionPane.showMessageDialog(dialog,
+                        ex.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+
+        // Action listener for the close button
+        closeButton.addActionListener(e -> dialog.dispose());
+
+        // Show the dialog
+        dialog.setVisible(true);
+    }
+    private void showpayCreditCardDialog() {
+        JDialog dialog = new JDialog(this, "Credit Card Payment", true);
+        dialog.setSize(300, 250);
+        dialog.setLayout(new GridLayout(4, 1, 10, 10));
+        dialog.setLocationRelativeTo(this);
+
+        // Add account number components
+        JLabel accountLabel = new JLabel("Enter Account Number:");
+        JTextField accountField = new JTextField();
+
+        // Add amount components
+        JLabel amountLabel = new JLabel("Enter Payment Amount:");
+        JTextField amountField = new JTextField();
+
+        // Add pay button
+        JButton payButton = new JButton("Pay");
+        payButton.addActionListener(e -> {
+            try {
+                // Get the account using the input account number
+                String accountNumber = accountField.getText().trim();
+                if (accountNumber.isEmpty()) {
+                    throw new IllegalArgumentException("Please enter an account number");
+                }
+
+                Account account = client.getAccount(accountNumber);
+
+                // Parse and validate amount
+                double amount = Double.parseDouble(amountField.getText());
+
+                // Check if amount is greater than balance
+                if (amount > account.getBalance()) {
+                    throw new IllegalArgumentException(
+                            String.format("Insufficient balance. Available: %.2f LE, Requested: %.2f LE",
+                                    account.getBalance(), amount)
+                    );
+                }
+
+                // New exception: Check if amount exceeds credit limit
+                if (amount > 20000) {
+                    throw new IllegalArgumentException(
+                            String.format("Amount exceeds credit limit. Maximum: %.2f LE, Requested: %.2f LE",
+                                    20000.0, amount)
+                    );
+                }
+
+                // Check if credit card exists and is active
+                if (account.getCreditCard() == null) {
+                    throw new IllegalArgumentException("No credit card found for this account");
+                }
+
+                // Process the payment if all checks pass
+                account.getCreditCard().makePayment(amount);
+
+                // Update balance after successful payment
+                account.withdraw(amount);
+
+                JOptionPane.showMessageDialog(dialog,
+                        String.format("Payment of %.2f LE processed successfully!", amount),
+                        "Success",
+                        JOptionPane.INFORMATION_MESSAGE);
+                dialog.dispose();
+
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(dialog,
+                        "Please enter a valid number for payment amount",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            } catch (IllegalArgumentException ex) {
+                JOptionPane.showMessageDialog(dialog,
+                        ex.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        JButton closeButton = new JButton("Close");
+        closeButton.addActionListener(e -> dialog.dispose());
+
+        // Add all components to dialog
+        dialog.add(accountLabel);
+        dialog.add(accountField);
+        dialog.add(amountLabel);
+        dialog.add(amountField);
+        dialog.add(payButton);
+        dialog.add(closeButton);
+
+        dialog.setVisible(true);
+    }
 
      private void showdisCreditCardDialog () {
          JDialog dialog = new JDialog(this, "Credit Card", true);
          dialog.setSize(300, 200);
          dialog.setLayout(new GridLayout(2, 1, 10, 10));
          dialog.setLocationRelativeTo(this);
-
-
-
-
 
 
          JButton closeButton = new JButton("Close");
