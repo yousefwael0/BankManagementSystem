@@ -48,6 +48,19 @@ public class AdminWindow extends JFrame {
         initializeComponents();
     }
 
+    private void saveData() {
+        try {
+            // Save clients and employees to their respective files
+            String clientsFilePath = "src/main/data/clients.json";
+            String employeesFilePath = "src/main/data/employees.json";
+
+            FileManager.saveToJson(clientsFilePath, bank.getClients());
+            FileManager.saveToJson(employeesFilePath, bank.getEmployees());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error saving data: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     private void initializeComponents() {
         // Panel for employee authorization
         JPanel authPanel = new JPanel(new GridLayout(4, 2));
@@ -122,18 +135,6 @@ public class AdminWindow extends JFrame {
         tablePanel.add(clientScrollPane, "Clients");
         tablePanel.add(transactionScrollPane, "Transactions");
         add(tablePanel, BorderLayout.SOUTH);
-    }
-    private void saveData() {
-        try {
-            // Save clients and employees to their respective files
-            String clientsFilePath = "src/main/data/clients.json";
-            String employeesFilePath = "src/main/data/employees.json";
-
-            FileManager.saveToJson(clientsFilePath, bank.getClients());
-            FileManager.saveToJson(employeesFilePath, bank.getEmployees());
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error saving data: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
     }
 
     // Method to authorize new employee
