@@ -33,14 +33,6 @@ public class Client extends User{
         this.phoneNumber = phoneNumber;
     }
     public List<Transaction> getTransactionHistory(){return transactions;}
-    public void addTransaction(Transaction transaction){
-        for (Transaction trans : transactions){
-            if (trans.getTransactionId().equals(transaction.getTransactionId())){
-                throw new IllegalArgumentException("Transaction Id must be unique");
-            }
-        }
-        transactions.add(transaction);
-    }
     public List<Transaction> getTransactionsByDate(LocalDate date) {
         List<Transaction> transactionsByDate = new ArrayList<>();
         for (Transaction transaction : transactions) {
@@ -50,9 +42,23 @@ public class Client extends User{
         }
         return transactionsByDate;
     }
+    public void addTransaction(Transaction transaction){
+        for (Transaction trans : transactions){
+            if (trans.getTransactionId().equals(transaction.getTransactionId())){
+                throw new IllegalArgumentException("Transaction Id must be unique");
+            }
+        }
+        transactions.add(transaction);
+    }
 
-    public List<Account> getAccounts() {
-        return accounts;
+    public List<Account> getAccounts() {return accounts;}
+    public Account getAccount(String accountNumber){
+        for (Account account : accounts) {
+            if (accountNumber.equals(account.accountNumber)){
+                return account;
+            }
+        }
+        throw new IllegalArgumentException("Account with number " + accountNumber + " not found");
     }
     public LoyaltyPoints getLoyaltyPoints() {
         return loyaltyPoints;
@@ -67,6 +73,9 @@ public class Client extends User{
             }
         }
         accounts.add(account);
+    }
+    public void removeAccount(Account account) {
+        accounts.remove(account);
     }
 
     @Override
