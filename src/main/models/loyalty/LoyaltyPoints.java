@@ -1,11 +1,13 @@
 package models.loyalty;
 
+import models.user.Client;
+
 public class LoyaltyPoints {
     private int points;
-    public final String clientID;
+    public final Client client;
 
-    public LoyaltyPoints(String clientID) {
-        this.clientID = clientID;
+    public LoyaltyPoints(Client client) {
+        this.client = client;
         this.points = 0;  // Start with 0 points
     }
 
@@ -21,12 +23,12 @@ public class LoyaltyPoints {
         if (pointsToRedeem <= points) {
             this.points -= pointsToRedeem;
         } else {
-            System.out.println("Not enough points to redeem.");
+            throw new IllegalArgumentException("Not enough points to redeem.\nPoints Reached: " + points);
         }
     }
 
     @Override
     public String toString() {
-        return "Client ID: " + clientID + ", Loyalty Points: " + points;
+        return "Client ID: " + client.userId + ", Loyalty Points: " + points;
     }
 }
