@@ -7,18 +7,16 @@ public class Transaction {
     private LocalDateTime date;
     private String type;
     private double amount;
-    private String employeeId;
     public final String clientId;
     private static int counter = 1; // Counter made static to ensure it increments globally
 
     // Constructor
-    public Transaction(LocalDateTime date, String type, double amount, String employeeId, String clientId) {
+    public Transaction(LocalDateTime date, String type, double amount, String clientId) {
 
         this.transactionId = "T" + String.format("%03d", counter++);
         this.setDate(date);
         this.setType(type);
         this.setAmount(amount);
-        this.setEmployeeId(employeeId);
         this.clientId = clientId;
     }
 
@@ -60,17 +58,6 @@ public class Transaction {
         this.amount = amount;
     }
 
-    public String getEmployeeId() {
-        return employeeId;
-    }
-
-    public void setEmployeeId(String employeeId) {
-        if (employeeId == null || employeeId.isEmpty()) {
-            throw new IllegalArgumentException("Employee ID cannot be null or empty.");
-        }
-        this.employeeId = employeeId;
-    }
-
     public static void setCounter(int counter) {
         Transaction.counter = counter;
     }
@@ -84,8 +71,7 @@ public class Transaction {
                 "Client ID: " + clientId + "\n" +
                 "Date: " + date + "\n" +
                 "Type: " + type + "\n" +
-                "Amount: " + amount + "\n" +
-                "Employee ID: " + employeeId;
+                "Amount: " + amount + "\n";
     }
 }
 
