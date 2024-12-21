@@ -22,7 +22,7 @@ public class CreditCard {
         this.cardNumber = "CC" + String.format("%03d", counter++);
         this.accountNumber = "ACCOUNT NUMBER";
         this.clientId = "CLIENTID";
-        this.isActive = false;
+        this.isActive = true;
     }
 
     public String getCardNumber() {return cardNumber;}
@@ -42,7 +42,6 @@ public class CreditCard {
         //Check if Card is active and amount is less than limit
         if (isActive && amount <= limit) {
             limit -= amount;
-            //client.earnLoyaltyPoints((int) Math.round(amount * 0.25));
         } else if (!isActive) {
             throw new IllegalArgumentException("Card is not active!");
         } else if (amount > limit) {
@@ -50,9 +49,13 @@ public class CreditCard {
         }
     }
 
+
     //Resetting limit
     public void resetLimit() {
-        limit=20000;
+        if(limit==20000)
+            throw new IllegalArgumentException("Limit is already reset!");
+        else
+             limit = 20000;
     }
 
     public void disableCard(String cardNumber){
