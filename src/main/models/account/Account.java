@@ -1,8 +1,5 @@
 package models.account;
 
-
-import models.user.Client;
-
 public abstract class Account {
     public String accountNumber;
     public String accountType; // Savings or Current
@@ -38,7 +35,7 @@ public abstract class Account {
         this.status = "Active";
         this.interestRate = 0;
         this.clientId = "";
-        this.creditCard = new CreditCard();
+        this.creditCard = null;
         this.accountType = "ACCOUNT TYPE";
     }
 
@@ -122,7 +119,7 @@ public abstract class Account {
         if (creditCard != null) {
             throw new IllegalArgumentException("Credit card already exists for this account");
         }
-        //creditCard = new CreditCard(this.accountNumber, this.client, true);
+        creditCard = new CreditCard(this.accountNumber, this.clientId, true);
     }
 
     public static void setCounter(int counter) {

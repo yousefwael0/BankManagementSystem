@@ -8,7 +8,14 @@
         "balance": 5000.0,
         "status": "Active",
         "interestRate": 0.03,
-        "clientId": "4"
+        "clientId": "4",
+        "creditCard": {
+          "cardNumber": "CC001",
+          "limit": 20000.0,
+          "isActive": false,
+          "accountNumber": "ACCOUNT NUMBER",
+          "clientId": "CLIENTID"
+        }
       },
       {
         "accountNumber": "ACC002",
@@ -53,7 +60,14 @@
         "balance": 10000.0,
         "status": "Active",
         "interestRate": 0.0,
-        "clientId": "5"
+        "clientId": "5",
+        "creditCard": {
+          "cardNumber": "CC003",
+          "limit": 20000.0,
+          "isActive": false,
+          "accountNumber": "ACCOUNT NUMBER",
+          "clientId": "CLIENTID"
+        }
       }
     ],
     "loyaltyPoints": {
@@ -83,7 +97,14 @@
         "balance": 3000.0,
         "status": "Active",
         "interestRate": 0.04,
-        "clientId": "6"
+        "clientId": "6",
+        "creditCard": {
+          "cardNumber": "CC004",
+          "limit": 20000.0,
+          "isActive": false,
+          "accountNumber": "ACCOUNT NUMBER",
+          "clientId": "CLIENTID"
+        }
       }
     ],
     "loyaltyPoints": {
@@ -113,7 +134,14 @@
         "balance": 15000.0,
         "status": "Active",
         "interestRate": 0.0,
-        "clientId": "7"
+        "clientId": "7",
+        "creditCard": {
+          "cardNumber": "CC005",
+          "limit": 20000.0,
+          "isActive": false,
+          "accountNumber": "ACCOUNT NUMBER",
+          "clientId": "CLIENTID"
+        }
       },
       {
         "accountNumber": "ACC006",
@@ -121,7 +149,14 @@
         "balance": 8000.0,
         "status": "Active",
         "interestRate": 0.02,
-        "clientId": "7"
+        "clientId": "7",
+        "creditCard": {
+          "cardNumber": "CC006",
+          "limit": 20000.0,
+          "isActive": false,
+          "accountNumber": "ACCOUNT NUMBER",
+          "clientId": "CLIENTID"
+        }
       }
     ],
     "loyaltyPoints": {
@@ -151,7 +186,14 @@
         "balance": 7000.0,
         "status": "Active",
         "interestRate": 0.03,
-        "clientId": "8"
+        "clientId": "8",
+        "creditCard": {
+          "cardNumber": "CC007",
+          "limit": 20000.0,
+          "isActive": false,
+          "accountNumber": "ACCOUNT NUMBER",
+          "clientId": "CLIENTID"
+        }
       }
     ],
     "loyaltyPoints": {
@@ -181,7 +223,14 @@
         "balance": 4000.0,
         "status": "Active",
         "interestRate": 0.0,
-        "clientId": "9"
+        "clientId": "9",
+        "creditCard": {
+          "cardNumber": "CC008",
+          "limit": 20000.0,
+          "isActive": false,
+          "accountNumber": "ACCOUNT NUMBER",
+          "clientId": "CLIENTID"
+        }
       }
     ],
     "loyaltyPoints": {

@@ -60,19 +60,7 @@ class LocalDateTimeAdapter implements JsonSerializer<LocalDateTime>, JsonDeseria
     }
 }
 
-class AccountAdapter implements JsonSerializer<Account>, JsonDeserializer<Account> {
-
-    @Override
-    public JsonElement serialize(Account account, Type typeOfSrc, JsonSerializationContext context) {
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("accountNumber", account.accountNumber);
-        jsonObject.addProperty("accountType", account.accountType);  // Serialize accountType (SAVINGS or CURRENT)
-        jsonObject.addProperty("balance", account.getBalance());
-        jsonObject.addProperty("status", account.getStatus());
-        jsonObject.addProperty("interestRate", account.getInterestRate());
-        jsonObject.addProperty("clientId", account.getClientId());  // Serialize clientId
-        return jsonObject;
-    }
+class AccountAdapter implements JsonDeserializer<Account> {
 
     @Override
     public Account deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {

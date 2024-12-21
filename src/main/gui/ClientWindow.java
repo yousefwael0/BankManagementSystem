@@ -23,9 +23,6 @@ public class ClientWindow extends JFrame {
         this.client = client;
 
 
-
-
-
         // Window setup
         setTitle("Client Dashboard");
         setSize(800, 600);
@@ -480,6 +477,7 @@ public class ClientWindow extends JFrame {
 
                 // Process the payment if all checks pass
                 account.getCreditCard().makePayment(amount);
+                client.earnLoyaltyPoints((int) Math.round(amount * 0.25));
 
                 // Update balance after successful payment
                 account.withdraw(amount);
