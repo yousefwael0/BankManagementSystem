@@ -9,7 +9,6 @@ import com.google.gson.reflect.TypeToken;
 import models.user.Client;
 import models.user.Employee;
 
-import java.io.FileReader;
 import java.lang.reflect.Type;
 import java.util.List;
 
