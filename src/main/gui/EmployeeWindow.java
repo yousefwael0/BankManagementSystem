@@ -185,10 +185,10 @@ public class EmployeeWindow extends JFrame {
                         // Done
                         Client client = bank.getClientByUsername(username);
                         if (accountType.equals("Savings")) {
-                            client.addAccount(new SavingsAccount(Double.parseDouble(balance), Double.parseDouble(intrestRate), client.userId));
+                            client.addAccount(new SavingsAccount(Double.parseDouble(balance), Double.parseDouble(intrestRate), client));
                         }
                         else if (accountType.equals("Current")) {
-                            client.addAccount(new CurrentAccount(Double.parseDouble(balance), client.userId));
+                            client.addAccount(new CurrentAccount(Double.parseDouble(balance), client));
                         }
                         JOptionPane.showMessageDialog(
                                 this,
@@ -544,7 +544,7 @@ public class EmployeeWindow extends JFrame {
                     try{ // here conflict in search @yousef
                         for (Account account : bank.getAccounts()) {
                             if (account.accountNumber.equals(input)) {
-                                client = bank.getClientById(account.clientId);
+                                client = account.getClient();
                             }
                         }
                     } catch(IllegalArgumentException ex){
