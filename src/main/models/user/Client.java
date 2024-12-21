@@ -20,7 +20,7 @@ public class Client extends User{
         super(firstName, lastName, username, password);
         this.setPhoneNumber(phoneNumber);
         this.accounts = new ArrayList<>();
-        this.loyaltyPoints = new LoyaltyPoints(userId); // Initialize loyalty points
+        this.loyaltyPoints = new LoyaltyPoints(this); // Initialize loyalty points
         this.transactions = new ArrayList<>();
     }
 
