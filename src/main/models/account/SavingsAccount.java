@@ -7,6 +7,9 @@ public class SavingsAccount extends Account {
             throws IllegalArgumentException {
         super("SAVINGS", balance, interestRate, client, null);
     }
+    public SavingsAccount(){
+        super();
+    }
 
     public double calculateInterest() {
         return getBalance() * getInterestRate();

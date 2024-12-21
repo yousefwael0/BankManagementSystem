@@ -4,11 +4,11 @@ package models.account;
 import models.user.Client;
 
 public class CreditCard {
-    public final String cardNumber;
+    public String cardNumber;
     private double limit=20000;
     private boolean isActive;
-    public final String accountNumber;
-    public final Client client;
+    public String accountNumber;
+    public Client client;
     private static int counter = 1;
 
     public CreditCard(String accountNumber, Client client, boolean isActive) {
@@ -19,6 +19,13 @@ public class CreditCard {
         this.accountNumber = accountNumber;
         this.client = client;
         this.isActive = isActive;
+    }
+
+    public CreditCard() {
+        this.cardNumber = "CC" + String.format("%03d", counter++);
+        this.accountNumber = "ACCOUNT NUMBER";
+        this.client = new Client();
+        this.isActive = false;
     }
 
     public double getLimit() {

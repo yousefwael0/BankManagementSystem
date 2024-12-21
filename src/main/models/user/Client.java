@@ -11,9 +11,9 @@ import java.util.Map;
 public class Client extends User{
     // Attributes
     private String phoneNumber;
-    private final List<Account> accounts;
-    private final LoyaltyPoints loyaltyPoints;
-    private final List<Transaction> transactions;
+    private List<Account> accounts;
+    private LoyaltyPoints loyaltyPoints;
+    private List<Transaction> transactions;
 
     // Constructor
     public Client(String firstName, String lastName, String username, String password, String phoneNumber) {
@@ -22,6 +22,13 @@ public class Client extends User{
         this.accounts = new ArrayList<>();
         this.loyaltyPoints = new LoyaltyPoints(this); // Initialize loyalty points
         this.transactions = new ArrayList<>();
+    }
+    public Client() {
+        super();
+        this.accounts = new ArrayList<>();
+        this.loyaltyPoints = new LoyaltyPoints(this);
+        this.transactions = new ArrayList<>();
+        this.phoneNumber = "PHONE NUMBER";
     }
 
     // Getters / Setters
