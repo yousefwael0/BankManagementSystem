@@ -7,8 +7,11 @@ import models.user.User;
 import services.Bank;
 import models.user.Client;
 import models.account.Account;
+import services.FileManager;
 
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +25,14 @@ public class ClientWindow extends JFrame {
         this.bank = bank;
         this.client = client;
 
+        // Add a WindowListener to handle the close button
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                saveData();
+                System.exit(0); // Exit the program
+            }
+        });
 
         // Window setup
         setTitle("Client Dashboard");
@@ -87,9 +98,18 @@ public class ClientWindow extends JFrame {
         setLocationRelativeTo(null); // Center the window
         setVisible(true);
 
+    }
 
+    private void saveData() {
+        try {
+            String clientsFilePath = "src/main/data/clients.json";
+            String employeesFilePath = "src/main/data/employees.json";
 
-
+            FileManager.saveToJson(clientsFilePath, bank.getClients());
+            FileManager.saveToJson(employeesFilePath, bank.getEmployees());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error saving data: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void showEditInfoDialog() {
@@ -530,13 +550,10 @@ public class ClientWindow extends JFrame {
      }
 
      private void logout () {
-
-         this.dispose();
+         saveData();
          new LoginWindow(bank).setVisible(true);
-
+         this.dispose();
      }
-
-
 }
 
 
