@@ -3,11 +3,11 @@ package models.account;
 import java.time.LocalDateTime;
 
 public class Transaction {
-    private final String transactionId;
+    private String transactionId;
     private LocalDateTime date;
     private String type;
     private double amount;
-    public final String clientId;
+    public String clientId;
     private static int counter = 1; // Counter made static to ensure it increments globally
 
     // Constructor
@@ -18,6 +18,13 @@ public class Transaction {
         this.setType(type);
         this.setAmount(amount);
         this.clientId = clientId;
+    }
+    public Transaction() {
+        this.transactionId = "T" + String.format("%03d", counter++);
+        this.setDate(LocalDateTime.now());
+        this.setType(null);
+        this.setAmount(0);
+        this.clientId = null;
     }
 
     // Getter and Setter methods
