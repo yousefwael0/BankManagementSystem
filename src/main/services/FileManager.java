@@ -14,6 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class FileManager {
+
     // Method to save a list of objects to a file
     public static <T> void saveToJson(String filePath, List<T> data) {
         Gson gson = new GsonBuilder()
@@ -60,6 +61,7 @@ class LocalDateTimeAdapter implements JsonSerializer<LocalDateTime>, JsonDeseria
 }
 
 class AccountAdapter implements JsonSerializer<Account>, JsonDeserializer<Account> {
+
     @Override
     public JsonElement serialize(Account account, Type typeOfSrc, JsonSerializationContext context) {
         JsonObject jsonObject = new JsonObject();
@@ -68,6 +70,7 @@ class AccountAdapter implements JsonSerializer<Account>, JsonDeserializer<Accoun
         jsonObject.addProperty("balance", account.getBalance());
         jsonObject.addProperty("status", account.getStatus());
         jsonObject.addProperty("interestRate", account.getInterestRate());
+        jsonObject.addProperty("clientId", account.getClientId());  // Serialize clientId
         return jsonObject;
     }
 

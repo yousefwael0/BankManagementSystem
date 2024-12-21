@@ -21,9 +21,9 @@ public class Transaction {
     }
     public Transaction() {
         this.transactionId = "T" + String.format("%03d", counter++);
-        this.setDate(LocalDateTime.now());
-        this.setType(null);
-        this.setAmount(0);
+        this.date = LocalDateTime.now();
+        this.type = null;
+        this.amount = 0;
         this.clientId = null;
     }
 

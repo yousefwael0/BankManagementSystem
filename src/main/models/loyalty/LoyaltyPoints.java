@@ -4,15 +4,15 @@ import models.user.Client;
 
 public class LoyaltyPoints {
     private int points;
-    public Client client;
+    private String clientId;
 
-    public LoyaltyPoints(Client client) {
-        this.client = client;
+    public LoyaltyPoints(String clientId) {
+        this.clientId = clientId;
         this.points = 0;  // Start with 0 points
     }
     public LoyaltyPoints() {
         this.points = 0;
-        this.client = null;
+        this.clientId = null;
     }
 
     public int getPoints() {
@@ -33,6 +33,6 @@ public class LoyaltyPoints {
 
     @Override
     public String toString() {
-        return "Client ID: " + client.userId + ", Loyalty Points: " + points;
+        return "Client ID: " + clientId + ", Loyalty Points: " + points;
     }
 }
