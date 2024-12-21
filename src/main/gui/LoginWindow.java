@@ -2,8 +2,6 @@ package gui;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import models.user.User;
 import services.Bank;
@@ -14,7 +12,7 @@ import models.user.Employee;
 public class LoginWindow extends JFrame {
     private JTextField usernameField;
     private JPasswordField passwordField;
-    private Bank bank;
+    private final Bank bank;
 
     public LoginWindow(Bank bank) {
         this.bank = bank;
@@ -57,19 +55,18 @@ public class LoginWindow extends JFrame {
         JPanel buttonPanel = new JPanel();
         JButton loginButton = new JButton("Login");
         loginButton.setFont(new Font("Montserrat", Font.BOLD, 14));
-        loginButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String username = usernameField.getText();
-                String password = new String(passwordField.getPassword());
-                authenticateUser(username, password);
-            }
-        });
+        loginButton.addActionListener(e ->authenticateUser());
         buttonPanel.add(loginButton);
         add(buttonPanel, BorderLayout.SOUTH);
+
+        // Trigger login when Enter is pressed in the password field
+        passwordField.addActionListener(e -> loginButton.doClick());
     }
 
-    private void authenticateUser(String username, String password) {
+    private void authenticateUser() {
+        String username = usernameField.getText();
+        String password = new String(passwordField.getPassword());
+
         if (username.isEmpty() || password.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please fill in all fields.");
             return;

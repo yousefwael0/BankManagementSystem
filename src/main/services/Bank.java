@@ -10,13 +10,12 @@ import models.user.User;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class Bank {
 
-    private List<Client> clients;
-    private List<Employee> employees;
+    private final List<Client> clients;
+    private final List<Employee> employees;
 
     // Constructor
     public Bank(List<Client> clients, List<Employee> employees) {

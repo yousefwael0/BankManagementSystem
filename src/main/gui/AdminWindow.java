@@ -9,21 +9,20 @@ import models.account.Transaction;
 import services.FileManager;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 public class AdminWindow extends JFrame {
-    private Bank bank;
+    private final Bank bank;
 
     // UI Components
     private JTable employeeTable;
     private JTable clientTable;
     private JTable transactionTable;
-    private JTextField empNameField, empUsernameField, empPasswordField, dateField, clientIDField, employeeIDField;
-    private JButton authorizeEmployeeButton, viewEmployeesButton, viewClientsButton, showTransactionsButton, filterButton;
 
     public AdminWindow(Bank bank) {
         this.bank = bank;
@@ -38,7 +37,6 @@ public class AdminWindow extends JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                // Save data
                 saveData();
                 System.exit(0); // Exit the program
             }
@@ -49,62 +47,65 @@ public class AdminWindow extends JFrame {
     }
 
     private void initializeComponents() {
-        // Panel for employee authorization
-        JPanel authPanel = new JPanel(new GridLayout(4, 2));
-        authPanel.add(new JLabel("Employee Name:"));
-        empNameField = new JTextField();
-        authPanel.add(empNameField);
+        JButton applyFilterButton, openAuthDialogButton, viewEmployeesButton, createEmployeeButton, viewClientsButton, showTransactionsButton, logoutButton;
+        JTextField filterInputField;
+        JComboBox<String> filterTypeComboBox;
 
-        authPanel.add(new JLabel("Username:"));
-        empUsernameField = new JTextField();
-        authPanel.add(empUsernameField);
+        // Panel for buttons
+        JPanel buttonPanel = new JPanel(new GridLayout(2, 2));
 
-        authPanel.add(new JLabel("Password:"));
-        empPasswordField = new JTextField();
-        authPanel.add(empPasswordField);
+        // Button to open authorization dialog
+        openAuthDialogButton = getButton("Authorize Employee");
+        openAuthDialogButton.addActionListener(e -> openAuthorizationDialog());
+        buttonPanel.add(openAuthDialogButton);
 
-        authorizeEmployeeButton = new JButton("Authorize Employee");
-        authorizeEmployeeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                authorizeNewEmployee();
+        // Button to view all employees
+        viewEmployeesButton = getButton("View Employees");
+        viewEmployeesButton.addActionListener(e -> displayEmployees());
+        buttonPanel.add(viewEmployeesButton);
+
+        // Button to view all clients
+        viewClientsButton = getButton("View Clients");
+        viewClientsButton.addActionListener(e -> displayClients());
+        buttonPanel.add(viewClientsButton);
+
+        // Button to view transactions
+        showTransactionsButton = getButton("View All Transactions");
+        showTransactionsButton.addActionListener(e -> showTransactions(bank.getTransactions()));
+        buttonPanel.add(showTransactionsButton);
+
+        // Button to Create new Employee
+        createEmployeeButton = getButton("Create Employee");
+        createEmployeeButton.addActionListener(e -> openCreateEmployeeDialog());
+        buttonPanel.add(createEmployeeButton);
+
+        // Filtering
+        buttonPanel.add(new JLabel("Filter Transactions By:"));
+
+        // Dropdown for filter type
+        filterTypeComboBox = new JComboBox<>(new String[]{"Filter by Date", "Filter by Client ID"});
+        buttonPanel.add(filterTypeComboBox);
+
+        // Input field for the selected filter
+        filterInputField = getTextField();
+        buttonPanel.add(filterInputField);
+
+        // Apply Filter Button
+        applyFilterButton = new JButton("Apply Filter");
+        applyFilterButton.addActionListener(e -> {
+            String selectedFilter = (String) filterTypeComboBox.getSelectedItem();
+            String input = filterInputField.getText().trim();
+
+            if (selectedFilter.equals("Filter by Date")) {
+                filterTransactionsByDate(input);
+            } else if (selectedFilter.equals("Filter by Client ID")) {
+                filterTransactionsByClientId(input);
             }
         });
-        authPanel.add(authorizeEmployeeButton);
+        buttonPanel.add(applyFilterButton);
 
-        // Panel for displaying tables (employees, clients, transactions)
-        JPanel displayPanel = new JPanel(new GridLayout(2, 2));
-
-        viewEmployeesButton = new JButton("View Employees");
-        viewEmployeesButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                displayEmployees();
-            }
-        });
-        displayPanel.add(viewEmployeesButton);
-
-        viewClientsButton = new JButton("View Clients");
-        viewClientsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                displayClients();
-            }
-        });
-        displayPanel.add(viewClientsButton);
-
-        showTransactionsButton = new JButton("Show Transactions");
-        showTransactionsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                showTransactions();
-            }
-        });
-        displayPanel.add(showTransactionsButton);
-
-        // Adding panels to the window
-        add(authPanel, BorderLayout.NORTH);
-        add(displayPanel, BorderLayout.CENTER);
+        // Add the button panel to the window
+        add(buttonPanel, BorderLayout.NORTH);
 
         // Initialize tables for data display
         employeeTable = new JTable();
@@ -121,11 +122,63 @@ public class AdminWindow extends JFrame {
         tablePanel.add(employeeScrollPane, "Employees");
         tablePanel.add(clientScrollPane, "Clients");
         tablePanel.add(transactionScrollPane, "Transactions");
-        add(tablePanel, BorderLayout.SOUTH);
+        add(tablePanel, BorderLayout.CENTER);
+
+        // Panel for Logout button
+        JPanel logoutPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        logoutButton = new JButton("Logout");
+        logoutButton.setFont(new Font("Arial", Font.PLAIN, 12));
+        logoutButton.setPreferredSize(new Dimension(100, 30));  // Smaller button size
+        logoutButton.addActionListener(e -> logout());
+        logoutPanel.add(logoutButton);
+
+        // Add the logout panel to the SOUTH (bottom)
+        add(logoutPanel, BorderLayout.SOUTH);
     }
+
+    private void filterTransactionsByDate(String date) {
+
+        if (date.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter a date in dd-MM-yyyy format.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        LocalDate filterDate;
+        try {
+            filterDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+            showTransactions(bank.getTransactionsByDate(filterDate));
+        } catch (DateTimeParseException ex) {
+            JOptionPane.showMessageDialog(this, "Invalid date format. Please use dd-MM-yyyy.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void filterTransactionsByClientId(String clientId) {
+        if (clientId.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter a valid Client ID.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        try{
+            showTransactions(bank.getTransactionsByClient(bank.getClientById(clientId)));
+        } catch (IllegalArgumentException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public JButton getButton(String text) {
+        JButton button = new JButton(text);
+        button.setFont(new Font("Arial", Font.BOLD, 14));
+        button.setPreferredSize(new Dimension(200, 40));
+        return button;
+    }
+
+    private JTextField getTextField() {
+        JTextField textField = new JTextField(20);
+        textField.setFont(new Font("Arial", Font.PLAIN, 14));
+        textField.setPreferredSize(new Dimension(200, 30));
+        return textField;
+    }
+
     private void saveData() {
         try {
-            // Save clients and employees to their respective files
             String clientsFilePath = "src/main/data/clients.json";
             String employeesFilePath = "src/main/data/employees.json";
 
@@ -134,27 +187,6 @@ public class AdminWindow extends JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error saving data: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    // Method to authorize new employee
-    private void authorizeNewEmployee() {
-        String name = empNameField.getText();
-        String username = empUsernameField.getText();
-        String password = empPasswordField.getText();
-
-        // Basic validation (can be extended)
-        if (name.isEmpty() || username.isEmpty() || password.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please fill in all fields.");
-            return;
-        }
-
-        try{
-            bank.authorizeEmployee(bank.getEmployeeByUsername(username));
-        }catch (IllegalArgumentException e){
-            JOptionPane.showMessageDialog(this, e.getMessage());
-            return;
-        }
-        JOptionPane.showMessageDialog(this, "Employee authorized successfully.");
     }
 
     // Method to display all employees
@@ -181,9 +213,12 @@ public class AdminWindow extends JFrame {
         model.addColumn("Client ID");
         model.addColumn("Name");
         model.addColumn("Phone Number");
+        model.addColumn("Number of Accounts");
+        model.addColumn("Loyalty Points");
+        model.addColumn("No. Transactions Made");
 
         for (Client client : clients) {
-            model.addRow(new Object[]{client.userId, client.getFirstName() + " " + client.getLastName(), client.getPhoneNumber()});
+            model.addRow(new Object[]{client.userId, client.getFirstName() + " " + client.getLastName(), client.getPhoneNumber(), client.getAccounts().size(), client.getLoyaltyPoints().getPoints(), client.getTransactionHistory().size()});
         }
 
         clientTable.setModel(model);
@@ -191,8 +226,11 @@ public class AdminWindow extends JFrame {
     }
 
     // Method to show all transactions
-    private void showTransactions() {
-        List<Transaction> transactions = bank.getTransactions(); // Modify bank to return all transactions
+    private void showTransactions(List<Transaction> transactions) {
+        if (transactions.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No transactions found.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn("Transaction ID");
         model.addColumn("Amount");
@@ -216,7 +254,106 @@ public class AdminWindow extends JFrame {
 
     // Method to switch between table views (employees, clients, transactions)
     private void updateTableView(String view) {
-        CardLayout cardLayout = (CardLayout) ((JPanel) getContentPane().getComponent(2)).getLayout();
-        cardLayout.show((JPanel) getContentPane().getComponent(2), view);
+        CardLayout cardLayout = (CardLayout) ((JPanel) getContentPane().getComponent(1)).getLayout();
+        cardLayout.show((JPanel) getContentPane().getComponent(1), view);
+    }
+
+    // Method to open the employee authorization dialog
+    private void openAuthorizationDialog() {
+
+        // Fields for username and password
+        JTextField usernameField = new JTextField();
+        JPasswordField passwordField = new JPasswordField();
+
+        Object[] fields = {"Username: ", usernameField,
+                            "Password: ", passwordField
+        };
+
+        int response;
+        do{
+            response = JOptionPane.showConfirmDialog(this, fields, "Authorize Employee", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+            if(response == JOptionPane.OK_OPTION){
+                String username = usernameField.getText();
+                String password = new String(passwordField.getPassword());
+
+                if (username.isEmpty() || password.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
+                    continue;
+                }
+                try {
+                    bank.authorizeEmployee(bank.getEmployeeByUsername(username));
+                    JOptionPane.showMessageDialog(this, "Employee authorized successfully.");
+                    break;
+                } catch (IllegalArgumentException ex) {
+                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        } while (response == JOptionPane.OK_OPTION);
+    }
+
+    // Create Employee Button
+    private void openCreateEmployeeDialog() {
+
+        // Fields for username and password
+        JTextField firstNameField = getTextField();
+        JTextField lastNameField = getTextField();
+        JTextField addressField = getTextField();
+        JTextField positionField = getTextField();
+        JTextField usernameField = getTextField();
+        JPasswordField passwordField = new JPasswordField(20);
+        JTextField graduatedCollegeField = getTextField();
+        JTextField yearofGraduationField = getTextField();
+        JTextField totalGradeField = getTextField();
+
+        Object[] fields = {
+                "First Name", firstNameField,
+                "Last Name", lastNameField,
+                "Address", addressField,
+                "Position", positionField,
+                "Username", usernameField,
+                "Password", passwordField,
+                "Graduated College", graduatedCollegeField,
+                "Year of Graduation", yearofGraduationField,
+                "Total Grade", totalGradeField
+        };
+
+        int response;
+        do {
+            response = JOptionPane.showConfirmDialog(this, fields, "Create Employee", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+            if (response == JOptionPane.OK_OPTION) {
+                try {
+                    String username = usernameField.getText();
+                    String password = new String(passwordField.getPassword());
+                    String firstName = firstNameField.getText();
+                    String lastName = lastNameField.getText();
+                    String address = addressField.getText();
+                    String position = positionField.getText();
+                    String graduatedCollege = graduatedCollegeField.getText();
+                    String totalGrade = totalGradeField.getText();
+                    if (username.isEmpty() || password.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || address.isEmpty() || position.isEmpty() || graduatedCollege.isEmpty() || totalGrade.isEmpty()) {
+                        JOptionPane.showMessageDialog(this, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
+                        continue;
+                    }
+                    int yearOfGraduation = Integer.parseInt(yearofGraduationField.getText());
+
+                    bank.addEmployee(new Employee(firstName, lastName, address, position, username, password, graduatedCollege, yearOfGraduation, totalGrade));
+                    JOptionPane.showMessageDialog(this, "Employee created successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                    break;
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(this, "Please enter a valid graduation year", "Error", JOptionPane.ERROR_MESSAGE);
+                } catch (IllegalArgumentException ex) {
+                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        } while (response == JOptionPane.OK_OPTION);
+
+        this.setVisible(true);
+    }
+
+    // Logout Button
+    private void logout() {
+        saveData();
+        new LoginWindow(bank).setVisible(true);
+        this.dispose();
     }
 }
