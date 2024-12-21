@@ -8,7 +8,7 @@
         "balance": 5000.0,
         "status": "Active",
         "interestRate": 0.03,
-        "clientId": "4",
+        "clientId": "4"
       },
       {
         "accountNumber": "ACC002",
@@ -53,7 +53,7 @@
         "balance": 10000.0,
         "status": "Active",
         "interestRate": 0.0,
-        "clientId": "5",
+        "clientId": "5"
       }
     ],
     "loyaltyPoints": {
@@ -83,7 +83,7 @@
         "balance": 3000.0,
         "status": "Active",
         "interestRate": 0.04,
-        "clientId": "6",
+        "clientId": "6"
       }
     ],
     "loyaltyPoints": {
@@ -113,7 +113,7 @@
         "balance": 15000.0,
         "status": "Active",
         "interestRate": 0.0,
-        "clientId": "7",
+        "clientId": "7"
       },
       {
         "accountNumber": "ACC006",
@@ -121,7 +121,7 @@
         "balance": 8000.0,
         "status": "Active",
         "interestRate": 0.02,
-        "clientId": "7",
+        "clientId": "7"
       }
     ],
     "loyaltyPoints": {
@@ -151,7 +151,7 @@
         "balance": 7000.0,
         "status": "Active",
         "interestRate": 0.03,
-        "clientId": "8",
+        "clientId": "8"
       }
     ],
     "loyaltyPoints": {
@@ -181,7 +181,7 @@
         "balance": 4000.0,
         "status": "Active",
         "interestRate": 0.0,
-        "clientId": "9",
+        "clientId": "9"
       }
     ],
     "loyaltyPoints": {
