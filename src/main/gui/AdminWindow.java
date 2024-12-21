@@ -11,16 +11,18 @@ import services.FileManager;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 public class AdminWindow extends JFrame {
-    private Bank bank;
+    private final Bank bank;
 
     // UI Components
     private JTable employeeTable;
     private JTable clientTable;
     private JTable transactionTable;
-    private JButton openAuthDialogButton, viewEmployeesButton, createEmployeeButton, viewClientsButton, showTransactionsButton, logoutButton;
 
     public AdminWindow(Bank bank) {
         this.bank = bank;
@@ -45,6 +47,10 @@ public class AdminWindow extends JFrame {
     }
 
     private void initializeComponents() {
+        JButton applyFilterButton, openAuthDialogButton, viewEmployeesButton, createEmployeeButton, viewClientsButton, showTransactionsButton, logoutButton;
+        JTextField filterInputField;
+        JComboBox<String> filterTypeComboBox;
+
         // Panel for buttons
         JPanel buttonPanel = new JPanel(new GridLayout(2, 2));
 
@@ -64,14 +70,39 @@ public class AdminWindow extends JFrame {
         buttonPanel.add(viewClientsButton);
 
         // Button to view transactions
-        showTransactionsButton = getButton("View Transactions");
-        showTransactionsButton.addActionListener(e -> showTransactions());
+        showTransactionsButton = getButton("View All Transactions");
+        showTransactionsButton.addActionListener(e -> showTransactions(bank.getTransactions()));
         buttonPanel.add(showTransactionsButton);
 
         // Button to Create new Employee
         createEmployeeButton = getButton("Create Employee");
         createEmployeeButton.addActionListener(e -> openCreateEmployeeDialog());
         buttonPanel.add(createEmployeeButton);
+
+        // Filtering
+        buttonPanel.add(new JLabel("Filter Transactions By:"));
+
+        // Dropdown for filter type
+        filterTypeComboBox = new JComboBox<>(new String[]{"Filter by Date", "Filter by Client ID"});
+        buttonPanel.add(filterTypeComboBox);
+
+        // Input field for the selected filter
+        filterInputField = getTextField();
+        buttonPanel.add(filterInputField);
+
+        // Apply Filter Button
+        applyFilterButton = new JButton("Apply Filter");
+        applyFilterButton.addActionListener(e -> {
+            String selectedFilter = (String) filterTypeComboBox.getSelectedItem();
+            String input = filterInputField.getText().trim();
+
+            if (selectedFilter.equals("Filter by Date")) {
+                filterTransactionsByDate(input);
+            } else if (selectedFilter.equals("Filter by Client ID")) {
+                filterTransactionsByClientId(input);
+            }
+        });
+        buttonPanel.add(applyFilterButton);
 
         // Add the button panel to the window
         add(buttonPanel, BorderLayout.NORTH);
@@ -105,12 +136,40 @@ public class AdminWindow extends JFrame {
         add(logoutPanel, BorderLayout.SOUTH);
     }
 
+    private void filterTransactionsByDate(String date) {
+
+        if (date.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter a date in dd-MM-yyyy format.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        LocalDate filterDate;
+        try {
+            filterDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+            showTransactions(bank.getTransactionsByDate(filterDate));
+        } catch (DateTimeParseException ex) {
+            JOptionPane.showMessageDialog(this, "Invalid date format. Please use dd-MM-yyyy.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void filterTransactionsByClientId(String clientId) {
+        if (clientId.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter a valid Client ID.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        try{
+            showTransactions(bank.getTransactionsByClient(bank.getClientById(clientId)));
+        } catch (IllegalArgumentException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     public JButton getButton(String text) {
         JButton button = new JButton(text);
         button.setFont(new Font("Arial", Font.BOLD, 14));
         button.setPreferredSize(new Dimension(200, 40));
         return button;
     }
+
     private JTextField getTextField() {
         JTextField textField = new JTextField(20);
         textField.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -167,8 +226,11 @@ public class AdminWindow extends JFrame {
     }
 
     // Method to show all transactions
-    private void showTransactions() {
-        List<Transaction> transactions = bank.getTransactions();
+    private void showTransactions(List<Transaction> transactions) {
+        if (transactions.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No transactions found.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn("Transaction ID");
         model.addColumn("Amount");
