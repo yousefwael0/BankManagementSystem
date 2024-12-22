@@ -8,7 +8,14 @@
         "balance": 5000.0,
         "status": "Active",
         "interestRate": 0.03,
-        "clientId": "4"
+        "clientId": "4",
+        "creditCard": {
+          "cardNumber": "CC001",
+          "limit": 0.0,
+          "isActive": true,
+          "accountNumber": "ACC001",
+          "clientId": "4"
+        }
       },
       {
         "accountNumber": "ACC002",
@@ -20,7 +27,7 @@
       }
     ],
     "loyaltyPoints": {
-      "points": 150
+      "points": 20181
     },
     "transactions": [
       {

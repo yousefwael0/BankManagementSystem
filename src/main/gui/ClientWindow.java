@@ -228,67 +228,113 @@ public class ClientWindow extends JFrame {
          }
 
      }
-
     private void showTransactionHistory() {
-        JDialog dialog = new JDialog(this, "Transaction History", true);
-        dialog.setSize(600, 400);
-        dialog.setLocationRelativeTo(this);
+        List<Account> accounts = client.getAccounts();
+        if (accounts.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "No accounts found!",
+                    "Transaction History",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
+        String[] accountOptions = accounts.stream()
+                .map(account -> "Account Number: " + account.accountNumber)
+                .toArray(String[]::new);
 
-        JPanel mainPanel = new JPanel(new BorderLayout());
+        String selectedAccount = (String) JOptionPane.showInputDialog(
+                this,
+                "Select an account to view transactions:",
+                "Transaction History",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                accountOptions,
+                accountOptions[0]);
 
+        if (selectedAccount != null) {
+            int selectedIndex = java.util.Arrays.asList(accountOptions).indexOf(selectedAccount);
+            Account account = accounts.get(selectedIndex);
 
-        JPanel filterPanel = new JPanel(new FlowLayout());
+            JDialog dialog = new JDialog(this, "Transaction History", true);
+            dialog.setSize(600, 400);
+            dialog.setLocationRelativeTo(this);
 
+            JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+            mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        JTextArea historyArea = new JTextArea();
-        historyArea.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(historyArea);
+            // Filter panel
+            JPanel filterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+            JButton allTransactionsBtn = new JButton("All Transactions");
+            JLabel dateLabel = new JLabel("Filter by Date (YYYY-MM-DD):");
+            JTextField dateField = new JTextField(10);
+            JButton dateFilterBtn = new JButton("Search");
 
+            filterPanel.add(allTransactionsBtn);
+            filterPanel.add(dateLabel);
+            filterPanel.add(dateField);
+            filterPanel.add(dateFilterBtn);
 
-        JButton allTransactionsBtn = new JButton("All Transactions");
-        allTransactionsBtn.addActionListener(e -> {
-            StringBuilder history = new StringBuilder();
-            getAllTransactions().forEach(transaction ->
-                    history.append(transaction.toString()).append("\n"));
-            historyArea.setText(history.toString());
-        });
+            // Transaction display area
+            JTextArea historyArea = new JTextArea();
+            historyArea.setEditable(false);
+            JScrollPane scrollPane = new JScrollPane(historyArea);
 
+            mainPanel.add(filterPanel, BorderLayout.NORTH);
+            mainPanel.add(scrollPane, BorderLayout.CENTER);
 
-        JLabel dateLabel = new JLabel("Date (YYYY-MM-DD):");
-        JTextField dateField = new JTextField(10);
-        JButton dateFilterBtn = new JButton("Filter by Date");
-        dateFilterBtn.addActionListener(e -> {
-            try {
-                java.time.LocalDate date = java.time.LocalDate.parse(dateField.getText());
-                StringBuilder history = new StringBuilder();
-                getTransactionsByDate(date).forEach(transaction ->
-                        history.append(transaction.toString()).append("\n"));
-                historyArea.setText(history.toString());
-            } catch (java.time.format.DateTimeParseException ex) {
-                JOptionPane.showMessageDialog(dialog,
-                        "Please enter date in format yyyy-MM-dd",
-                        "Invalid Date Format",
-                        JOptionPane.ERROR_MESSAGE);
-            }
-        });
+            // Add header with account info
+            historyArea.setText(String.format("Transaction History for Account: %s\n\n",
+                    account.accountNumber));
 
-        filterPanel.add(allTransactionsBtn);
-        filterPanel.add(dateLabel);
-        filterPanel.add(dateField);
-        filterPanel.add(dateFilterBtn);
+            // Button actions
+            allTransactionsBtn.addActionListener(e -> {
+                List<models.account.Transaction> transactions = getAllTransactions();
+                displayTransactions(transactions, historyArea, account.accountNumber);
+            });
 
-        mainPanel.add(filterPanel, BorderLayout.NORTH);
-        mainPanel.add(scrollPane, BorderLayout.CENTER);
+            dateFilterBtn.addActionListener(e -> {
+                String dateStr = dateField.getText().trim();
+                if (dateStr.isEmpty()) {
+                    JOptionPane.showMessageDialog(dialog,
+                            "Please enter a date",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
 
-        dialog.add(mainPanel);
+                try {
+                    java.time.LocalDate date = java.time.LocalDate.parse(dateStr);
+                    List<models.account.Transaction> transactions = getTransactionsByDate(date);
+                    displayTransactions(transactions, historyArea, account.accountNumber);
+                } catch (java.time.format.DateTimeParseException ex) {
+                    JOptionPane.showMessageDialog(dialog,
+                            "Please enter date in format YYYY-MM-DD",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            });
 
-        StringBuilder history = new StringBuilder();
-        getAllTransactions().forEach(transaction ->
-                history.append(transaction.toString()).append("\n"));
-        historyArea.setText(history.toString());
+            // Show initial transactions
+            List<models.account.Transaction> transactions = getAllTransactions();
+            displayTransactions(transactions, historyArea, account.accountNumber);
 
-        dialog.setVisible(true);
+            dialog.add(mainPanel);
+            dialog.setVisible(true);
+        }
+    }
+
+    private void displayTransactions(List<models.account.Transaction> transactions, JTextArea historyArea, String accountNumber) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("Transaction History for Account: %s\n\n", accountNumber));
+
+        if (transactions.isEmpty()) {
+            sb.append("No transactions found.");
+        } else {
+            transactions.forEach(transaction ->
+                    sb.append(transaction.toString()).append("\n"));
+        }
+
+        historyArea.setText(sb.toString());
     }
 
     private List<models.account.Transaction> getAllTransactions() {
@@ -301,42 +347,72 @@ public class ClientWindow extends JFrame {
                 .collect(java.util.stream.Collectors.toList());
     }
 
-     private void showDepositDialog () {
-         List<Account> accounts = client.getAccounts();
-         if (accounts.isEmpty()) {
-             JOptionPane.showMessageDialog(this,
-                     "No account found for deposit",
-                     "Error",
-                     JOptionPane.ERROR_MESSAGE);
-             return;
-         }
+    private void showDepositDialog() {
+        List<Account> accounts = client.getAccounts();
+        if (accounts.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "No accounts found!",
+                    "Deposit",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
-         String amountStr = JOptionPane.showInputDialog(this,
-                 "Enter amount to deposit:",
-                 "Deposit Money",
-                 JOptionPane.PLAIN_MESSAGE);
+        String[] accountOptions = accounts.stream()
+                .map(account -> "Account Number: " + account.accountNumber)
+                .toArray(String[]::new);
 
-         if (amountStr != null && !amountStr.isEmpty()) {
-             try {
-                 double amount = Double.parseDouble(amountStr);
-                 Account account = accounts.get(0);
-                 account.deposit(amount);
-                 JOptionPane.showMessageDialog(this,
-                         String.format("Successfully deposited $%.2f", amount));
-             } catch (NumberFormatException ex) {
-                 JOptionPane.showMessageDialog(this,
-                         "Please enter a valid amount",
-                         "Error",
-                         JOptionPane.ERROR_MESSAGE);
-             } catch (IllegalArgumentException ex) {
-                 JOptionPane.showMessageDialog(this,
-                         ex.getMessage(),
-                         "Error",
-                         JOptionPane.ERROR_MESSAGE);
-             }
-         }
-     }
+        String selectedAccount = (String) JOptionPane.showInputDialog(
+                this,
+                "Select an account for deposit:",
+                "Deposit",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                accountOptions,
+                accountOptions[0]);
 
+        if (selectedAccount != null) {
+            int selectedIndex = java.util.Arrays.asList(accountOptions).indexOf(selectedAccount);
+            Account account = accounts.get(selectedIndex);
+
+            String amountStr = JOptionPane.showInputDialog(this,
+                    "Enter amount to deposit:",
+                    "Deposit Money",
+                    JOptionPane.PLAIN_MESSAGE);
+
+            if (amountStr != null && !amountStr.isEmpty()) {
+                try {
+                    double amount = Double.parseDouble(amountStr);
+                    account.deposit(amount);
+
+                    String successMessage = String.format("""
+                    Deposit Successful!
+                    Account Number: %s
+                    Amount Deposited: $%.2f
+                    New Balance: $%.2f
+                    """,
+                            account.accountNumber,
+                            amount,
+                            account.getBalance());
+
+                    JOptionPane.showMessageDialog(this,
+                            successMessage,
+                            "Deposit Successful",
+                            JOptionPane.INFORMATION_MESSAGE);
+
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(this,
+                            "Please enter a valid amount",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                } catch (IllegalArgumentException ex) {
+                    JOptionPane.showMessageDialog(this,
+                            ex.getMessage(),
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+    }
      private void showTransferDialog () {
          List<Account> accounts = client.getAccounts();
          if (accounts.isEmpty()) {
@@ -445,6 +521,7 @@ public class ClientWindow extends JFrame {
         // Show the dialog
         dialog.setVisible(true);
     }
+
     private void showpayCreditCardDialog() {
         JDialog dialog = new JDialog(this, "Credit Card Payment", true);
         dialog.setSize(300, 250);
@@ -473,16 +550,8 @@ public class ClientWindow extends JFrame {
 
                 // Parse and validate amount
                 double amount = Double.parseDouble(amountField.getText());
-
-                // Check if amount is greater than balance
-                if (amount > account.getBalance()) {
-                    throw new IllegalArgumentException(
-                            String.format("Insufficient balance. Available: %.2f LE, Requested: %.2f LE",
-                                    account.getBalance(), amount)
-                    );
-                }
-
-                // New exception: Check if amount exceeds credit limit
+                client.earnLoyaltyPoints((int) Math.round(amount * 0.25));
+                // Check if amount exceeds credit limit
                 if (amount > 20000) {
                     throw new IllegalArgumentException(
                             String.format("Amount exceeds credit limit. Maximum: %.2f LE, Requested: %.2f LE",
@@ -490,17 +559,13 @@ public class ClientWindow extends JFrame {
                     );
                 }
 
-                // Check if credit card exists and is active
+                // Check if credit card exists
                 if (account.getCreditCard() == null) {
                     throw new IllegalArgumentException("No credit card found for this account");
                 }
 
-                // Process the payment if all checks pass
+                // Process the payment using only the credit limit
                 account.getCreditCard().makePayment(amount);
-                client.earnLoyaltyPoints((int) Math.round(amount * 0.25));
-
-                // Update balance after successful payment
-                account.withdraw(amount);
 
                 JOptionPane.showMessageDialog(dialog,
                         String.format("Payment of %.2f LE processed successfully!", amount),
@@ -534,6 +599,8 @@ public class ClientWindow extends JFrame {
 
         dialog.setVisible(true);
     }
+
+
 
      private void showdisCreditCardDialog () {
          JDialog dialog = new JDialog(this, "Credit Card", true);
