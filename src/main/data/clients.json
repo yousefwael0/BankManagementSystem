@@ -8,13 +8,13 @@
         "balance": 20000.0,
         "status": "Active",
         "interestRate": 0.03,
-        "clientId": "4",
+        "clientId": "USR4",
         "creditCard": {
           "cardNumber": "CC001",
           "limit": 0.0,
           "isActive": true,
           "accountNumber": "ACC001",
-          "clientId": "4"
+          "clientId": "USR4"
         }
       },
       {
@@ -23,13 +23,13 @@
         "balance": 1900.0,
         "status": "Active",
         "interestRate": 0.0,
-        "clientId": "4",
+        "clientId": "USR4",
         "creditCard": {
           "cardNumber": "CC002",
           "limit": 0.0,
           "isActive": false,
           "accountNumber": "ACC002",
-          "clientId": "4"
+          "clientId": "USR4"
         }
       }
     ],
@@ -42,24 +42,24 @@
         "date": "2024-12-12T10:30:00",
         "type": "DEPOSIT",
         "amount": 500.0,
-        "clientId": "4"
+        "clientId": "USR4"
       },
       {
         "transactionId": "T002",
         "date": "2024-12-13T14:00:00",
         "type": "WITHDRAWAL",
         "amount": 200.0,
-        "clientId": "4"
+        "clientId": "USR4"
       },
       {
         "transactionId": "T008",
         "date": "2024-12-22T02:49:48.3274026",
         "type": "TRANSFER",
         "amount": 10000.0,
-        "clientId": "4"
+        "clientId": "USR4"
       }
     ],
-    "userId": "4",
+    "userId": "USR4",
     "firstName": "Alice",
     "lastName": "Johnson",
     "username": "alicej",
@@ -74,7 +74,7 @@
         "balance": 10000.0,
         "status": "Active",
         "interestRate": 0.0,
-        "clientId": "5"
+        "clientId": "USR5"
       }
     ],
     "loyaltyPoints": {
@@ -86,10 +86,10 @@
         "date": "2024-12-14T09:00:00",
         "type": "TRANSFER",
         "amount": 1000.0,
-        "clientId": "5"
+        "clientId": "USR5"
       }
     ],
-    "userId": "5",
+    "userId": "USR5",
     "firstName": "Bob",
     "lastName": "Smith",
     "username": "bobsmith",
@@ -104,7 +104,7 @@
         "balance": 3000.0,
         "status": "Active",
         "interestRate": 0.04,
-        "clientId": "6"
+        "clientId": "USR6"
       }
     ],
     "loyaltyPoints": {
@@ -116,10 +116,10 @@
         "date": "2024-12-15T11:00:00",
         "type": "DEPOSIT",
         "amount": 300.0,
-        "clientId": "6"
+        "clientId": "USR6"
       }
     ],
-    "userId": "6",
+    "userId": "USR6",
     "firstName": "Charlie",
     "lastName": "Green",
     "username": "charlieg",
@@ -134,7 +134,7 @@
         "balance": 15000.0,
         "status": "Active",
         "interestRate": 0.0,
-        "clientId": "7"
+        "clientId": "USR7"
       },
       {
         "accountNumber": "ACC006",
@@ -142,7 +142,7 @@
         "balance": 8000.0,
         "status": "Active",
         "interestRate": 0.02,
-        "clientId": "7"
+        "clientId": "USR7"
       }
     ],
     "loyaltyPoints": {
@@ -154,10 +154,10 @@
         "date": "2024-12-16T13:30:00",
         "type": "TRANSFER",
         "amount": 800.0,
-        "clientId": "7"
+        "clientId": "USR7"
       }
     ],
-    "userId": "7",
+    "userId": "USR7",
     "firstName": "Diana",
     "lastName": "Prince",
     "username": "dianap",
@@ -172,7 +172,7 @@
         "balance": 7000.0,
         "status": "Active",
         "interestRate": 0.03,
-        "clientId": "8"
+        "clientId": "USR8"
       }
     ],
     "loyaltyPoints": {
@@ -184,10 +184,10 @@
         "date": "2024-12-17T15:45:00",
         "type": "WITHDRAWAL",
         "amount": 700.0,
-        "clientId": "8"
+        "clientId": "USR8"
       }
     ],
-    "userId": "8",
+    "userId": "USR8",
     "firstName": "Eve",
     "lastName": "Adams",
     "username": "evea",
@@ -202,7 +202,7 @@
         "balance": 4000.0,
         "status": "Active",
         "interestRate": 0.0,
-        "clientId": "9"
+        "clientId": "USR9"
       }
     ],
     "loyaltyPoints": {
@@ -214,10 +214,10 @@
         "date": "2024-12-18T10:00:00",
         "type": "DEPOSIT",
         "amount": 500.0,
-        "clientId": "9"
+        "clientId": "USR9"
       }
     ],
-    "userId": "9",
+    "userId": "USR9",
     "firstName": "Frank",
     "lastName": "Brown",
     "username": "frankb",
