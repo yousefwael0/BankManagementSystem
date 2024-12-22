@@ -602,19 +602,62 @@ public class ClientWindow extends JFrame {
 
 
 
-     private void showdisCreditCardDialog () {
-         JDialog dialog = new JDialog(this, "Credit Card", true);
-         dialog.setSize(300, 200);
-         dialog.setLayout(new GridLayout(2, 1, 10, 10));
-         dialog.setLocationRelativeTo(this);
+    private void showdisCreditCardDialog() {
+        List<Account> accounts = client.getAccounts();
+        if (accounts.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "No accounts found!",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
+        // Select account
+        String[] accountOptions = accounts.stream()
+                .map(account -> account.accountNumber)
+                .toArray(String[]::new);
 
-         JButton closeButton = new JButton("Close");
-         closeButton.addActionListener(e -> dialog.dispose());
-         dialog.add(closeButton);
+        String selectedAccount = (String) JOptionPane.showInputDialog(
+                this,
+                "Select account to disable credit card:",
+                "Disable Credit Card",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                accountOptions,
+                accountOptions[0]);
 
-         dialog.setVisible(true);
-     }
+        if (selectedAccount != null) {
+            Account account = accounts.stream()
+                    .filter(acc -> acc.accountNumber.equals(selectedAccount))
+                    .findFirst()
+                    .orElse(null);
+
+            if (account != null) {
+                CreditCard card = account.getCreditCard();
+                if (card == null) {
+                    JOptionPane.showMessageDialog(this,
+                            "No credit card found for this account",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                try {
+                    // Disable the card
+                    card.disableCard(card.cardNumber);
+                    JOptionPane.showMessageDialog(this,
+                            "Credit card has been successfully disabled",
+                            "Success",
+                            JOptionPane.INFORMATION_MESSAGE);
+                } catch (IllegalArgumentException e) {
+                    JOptionPane.showMessageDialog(this,
+                            e.getMessage(),
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+    }
 
      private void logout () {
          saveData();

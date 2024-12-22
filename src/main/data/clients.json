@@ -5,7 +5,7 @@
       {
         "accountNumber": "ACC001",
         "accountType": "SAVINGS",
-        "balance": 5000.0,
+        "balance": 18000.0,
         "status": "Active",
         "interestRate": 0.03,
         "clientId": "4",
@@ -20,14 +20,21 @@
       {
         "accountNumber": "ACC002",
         "accountType": "CURRENT",
-        "balance": 2000.0,
+        "balance": 1900.0,
         "status": "Active",
         "interestRate": 0.0,
-        "clientId": "4"
+        "clientId": "4",
+        "creditCard": {
+          "cardNumber": "CC002",
+          "limit": 0.0,
+          "isActive": false,
+          "accountNumber": "ACC002",
+          "clientId": "4"
+        }
       }
     ],
     "loyaltyPoints": {
-      "points": 20181
+      "points": 25931
     },
     "transactions": [
       {
@@ -42,6 +49,13 @@
         "date": "2024-12-13T14:00:00",
         "type": "WITHDRAWAL",
         "amount": 200.0,
+        "clientId": "4"
+      },
+      {
+        "transactionId": "T008",
+        "date": "2024-12-22T02:49:48.3274026",
+        "type": "TRANSFER",
+        "amount": 10000.0,
         "clientId": "4"
       }
     ],
