@@ -3,6 +3,7 @@ package gui;
 import javax.swing.*;
 
 import models.account.CreditCard;
+import models.account.Transaction;
 import models.user.User;
 import services.Bank;
 import models.user.Client;
@@ -12,6 +13,7 @@ import services.FileManager;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
@@ -93,7 +95,7 @@ public class ClientWindow extends JFrame {
         footerPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
 
 
-        logoutButton.addActionListener(e -> logout());
+        //logoutButton.addActionListener(e -> logout());
         footerPanel.add(logoutButton);
 
         add(footerPanel, BorderLayout.SOUTH);
@@ -113,6 +115,12 @@ public class ClientWindow extends JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error saving data: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void logout () {
+        saveData();
+        new LoginWindow(bank).setVisible(true);
+        this.dispose();
     }
 
     private void showEditInfoDialog() {
@@ -191,8 +199,6 @@ public class ClientWindow extends JFrame {
 
         dialog.setVisible(true);
     }
-
-
 
     private void showAccountDetails () {
         List<Account> accounts = client.getAccounts();
@@ -386,6 +392,7 @@ public class ClientWindow extends JFrame {
                 try {
                     double amount = Double.parseDouble(amountStr);
                     account.deposit(amount);
+                    bank.getClientById(account.getClientId()).addTransaction(new Transaction(LocalDateTime.now(), "DEPOSIT", amount, account.getClientId()));
 
                     String successMessage = String.format("""
                     Deposit Successful!
@@ -453,6 +460,7 @@ public class ClientWindow extends JFrame {
                 try {
                     double amount = Double.parseDouble(amountStr);
                     account.withdraw(amount);
+                    bank.getClientById(account.getClientId()).addTransaction(new Transaction(LocalDateTime.now(), "WITHDRAW", amount, account.getClientId()));
 
                     String successMessage = String.format("""
                 Withdrawal Successful!
@@ -746,11 +754,4 @@ private void showdisCreditCardDialog() {
 
     dialog.setVisible(true);
 }
-
-
-    private void logout () {
-        saveData();
-        new LoginWindow(bank).setVisible(true);
-        this.dispose();
-    }
 }

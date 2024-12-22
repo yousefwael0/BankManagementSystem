@@ -37,5 +37,18 @@
     "lastName": "Amr",
     "username": "karim",
     "password": "amr"
+  },
+  {
+    "isActive": true,
+    "address": "Madinaty",
+    "position": "HR",
+    "graduatedCollege": "ASU",
+    "totalGrade": "Excelent",
+    "yearOfGraduation": 2020,
+    "userId": "USR011",
+    "firstName": "Nour",
+    "lastName": "Hany",
+    "username": "nour",
+    "password": "hany1234"
   }
 ]
