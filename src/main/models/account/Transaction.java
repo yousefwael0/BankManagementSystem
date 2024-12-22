@@ -10,7 +10,7 @@ public class Transaction {
     public String clientId;
     private static int counter = 1;
 
-    // Constructor
+    // Constructor el param
     public Transaction(LocalDateTime date, String type, double amount, String clientId) {
 
         this.transactionId = "T" + String.format("%03d", counter++);
@@ -19,7 +19,7 @@ public class Transaction {
         this.setAmount(amount);
         this.clientId = clientId;
     }
-    // constructor def
+    // el default
     public Transaction() {
         this.transactionId = "T" + String.format("%03d", counter++);
         this.date = LocalDateTime.now();
@@ -28,7 +28,7 @@ public class Transaction {
         this.clientId = null;
     }
 
-    // Getter Setter
+    // Getter w Setter
     public String getTransactionId() {
         return transactionId;
     }
@@ -39,7 +39,7 @@ public class Transaction {
 
     public void setDate(LocalDateTime date) {
         if (date == null) {
-            throw new IllegalArgumentException("Transaction date cannot be null.");
+            throw new IllegalArgumentException("Transaction date cannot be empty.");
         }
         this.date = date;
     }
@@ -50,7 +50,7 @@ public class Transaction {
 
     public void setType(String type) {
         if (type == null || type.isEmpty()) {
-            throw new IllegalArgumentException("Transaction type cannot be null or empty.");
+            throw new IllegalArgumentException("Transaction type cannot be empty.");
         }
         this.type = type;
     }
