@@ -576,8 +576,8 @@ public class EmployeeWindow extends JFrame {
                 JOptionPane.INFORMATION_MESSAGE);
     }
 
-    public EmployeeWindow(Bank bank, Employee employee) {
-        this.bank = bank;
+    public EmployeeWindow( Employee employee) {
+        this.bank = Bank.getInstance();
         this.employee = employee;
 
         setTitle("Employee Dashboard");
@@ -626,7 +626,7 @@ public class EmployeeWindow extends JFrame {
 
     private void logout() {
         saveData();
-        new LoginWindow(bank).setVisible(true);
+        new LoginWindow().setVisible(true);
         this.dispose();
     }
 

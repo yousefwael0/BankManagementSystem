@@ -12,14 +12,15 @@ import models.user.Employee;
 public class LoginWindow extends JFrame {
     private JTextField usernameField;
     private JPasswordField passwordField;
-    private final Bank bank;
+    private Bank bank;
 
-    public LoginWindow(Bank bank) {
-        this.bank = bank;
+    public LoginWindow() {
         initialize();
     }
 
     public void initialize() {
+        bank = Bank.getInstance();
+
         // Window setup
         setTitle("Bank Management System - Login");
         setSize(400, 300);
@@ -80,11 +81,11 @@ public class LoginWindow extends JFrame {
         }
 
         if (user instanceof Admin)
-            new AdminWindow(bank).setVisible(true);
+            new AdminWindow().setVisible(true);
         else if (user instanceof Employee)
-            new EmployeeWindow(bank, (Employee) user).setVisible(true);
+            new EmployeeWindow((Employee) user).setVisible(true);
         else if (user instanceof Client)
-            new ClientWindow(bank, (Client) user).setVisible(true);
+            new ClientWindow((Client) user).setVisible(true);
 
         this.dispose(); // Close the login window
     }

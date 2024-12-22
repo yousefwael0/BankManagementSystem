@@ -23,8 +23,8 @@ public class ClientWindow extends JFrame {
     private Client client;
 
 
-    public ClientWindow(Bank bank, Client client) {
-        this.bank = bank;
+    public ClientWindow(Client client) {
+        this.bank = Bank.getInstance();
         this.client = client;
 
         // Add a WindowListener to handle the close button
@@ -119,7 +119,7 @@ public class ClientWindow extends JFrame {
 
     private void logout () {
         saveData();
-        new LoginWindow(bank).setVisible(true);
+        new LoginWindow().setVisible(true);
         this.dispose();
     }
 

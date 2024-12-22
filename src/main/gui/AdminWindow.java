@@ -24,8 +24,8 @@ public class AdminWindow extends JFrame {
     private JTable clientTable;
     private JTable transactionTable;
 
-    public AdminWindow(Bank bank) {
-        this.bank = bank;
+    public AdminWindow() {
+        this.bank = Bank.getInstance();
         setTitle("Admin Dashboard");
         setSize(800, 600);  // Set an initial size for the window
         setResizable(false);
@@ -353,7 +353,7 @@ public class AdminWindow extends JFrame {
     // Logout Button
     private void logout() {
         saveData();
-        new LoginWindow(bank).setVisible(true);
+        new LoginWindow().setVisible(true);
         this.dispose();
     }
 }
