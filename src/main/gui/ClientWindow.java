@@ -56,6 +56,7 @@ public class ClientWindow extends JFrame {
         JButton viewAccountButton = new JButton("View Account Details");
         JButton transactionHistoryButton = new JButton("View Transaction History");
         JButton depositButton = new JButton("Deposit Money");
+        JButton withdrawButton = new JButton("Withdraw Money");
         JButton transferButton = new JButton("Transfer Money");
         JButton creditCardButton = new JButton("Ask for Credit Card");
         JButton paycreditCardButton = new JButton(" Pay With Credit Card");
@@ -67,6 +68,7 @@ public class ClientWindow extends JFrame {
         viewAccountButton.addActionListener(e -> showAccountDetails());
         transactionHistoryButton.addActionListener(e -> showTransactionHistory());
         depositButton.addActionListener(e -> showDepositDialog());
+        withdrawButton.addActionListener(e -> showWithdrawDialog());
         transferButton.addActionListener(e -> showTransferDialog());
         creditCardButton.addActionListener(e -> showCreditCardDialog());
         paycreditCardButton.addActionListener(e -> showpayCreditCardDialog());
@@ -78,6 +80,7 @@ public class ClientWindow extends JFrame {
         buttonPanel.add(viewAccountButton);
         buttonPanel.add(transactionHistoryButton);
         buttonPanel.add(depositButton);
+        buttonPanel.add(withdrawButton);
         buttonPanel.add(transferButton);
         buttonPanel.add(creditCardButton);
         buttonPanel.add(paycreditCardButton);
@@ -191,43 +194,43 @@ public class ClientWindow extends JFrame {
 
 
 
-     private void showAccountDetails () {
-         List<Account> accounts = client.getAccounts();
-         if (accounts.isEmpty()) {
-             JOptionPane.showMessageDialog(this, "No accounts found!", "Account Details", JOptionPane.WARNING_MESSAGE);
-             return;
-         }
+    private void showAccountDetails () {
+        List<Account> accounts = client.getAccounts();
+        if (accounts.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No accounts found!", "Account Details", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
-         String[] accountOptions = accounts.stream()
-                 .map(account -> "Account Number: " + account.accountNumber)
-                 .toArray(String[]::new);
+        String[] accountOptions = accounts.stream()
+                .map(account -> "Account Number: " + account.accountNumber)
+                .toArray(String[]::new);
 
-         String selectedAccount = (String) JOptionPane.showInputDialog(
-                 this,
-                 "Select an account to view details:",
-                 "Account Details",
-                 JOptionPane.QUESTION_MESSAGE,
-                 null,
-                 accountOptions,
-                 accountOptions[0]);
+        String selectedAccount = (String) JOptionPane.showInputDialog(
+                this,
+                "Select an account to view details:",
+                "Account Details",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                accountOptions,
+                accountOptions[0]);
 
-         if (selectedAccount != null) {
-             int selectedIndex = java.util.Arrays.asList(accountOptions).indexOf(selectedAccount);
-             Account account = accounts.get(selectedIndex);
+        if (selectedAccount != null) {
+            int selectedIndex = java.util.Arrays.asList(accountOptions).indexOf(selectedAccount);
+            Account account = accounts.get(selectedIndex);
 
-             String details = String.format("""
+            String details = String.format("""
                 Account Number: %s
                 Balance: $%.2f
                 Account Type: %s
                 """,
-                     account.accountNumber,
-                     account.getBalance(),
-                     account.accountType);
+                    account.accountNumber,
+                    account.getBalance(),
+                    account.accountType);
 
-             JOptionPane.showMessageDialog(this, details, "Account Details", JOptionPane.INFORMATION_MESSAGE);
-         }
+            JOptionPane.showMessageDialog(this, details, "Account Details", JOptionPane.INFORMATION_MESSAGE);
+        }
 
-     }
+    }
     private void showTransactionHistory() {
         List<Account> accounts = client.getAccounts();
         if (accounts.isEmpty()) {
@@ -413,64 +416,133 @@ public class ClientWindow extends JFrame {
             }
         }
     }
-     private void showTransferDialog () {
-         List<Account> accounts = client.getAccounts();
-         if (accounts.isEmpty()) {
-             JOptionPane.showMessageDialog(this,
-                     "No account found for transfer",
-                     "Error",
-                     JOptionPane.ERROR_MESSAGE);
-             return;
-         }
 
-         JDialog dialog = new JDialog(this, "Transfer Money", true);
-         dialog.setSize(300, 200);
-         dialog.setLayout(new GridLayout(4, 2, 10, 10));
-         dialog.setLocationRelativeTo(this);
+    private void showWithdrawDialog() {
+        List<Account> accounts = client.getAccounts();
+        if (accounts.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "No accounts found!",
+                    "Withdraw",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
-         dialog.add(new JLabel("Amount:"));
-         JTextField amountField = new JTextField();
-         dialog.add(amountField);
+        String[] accountOptions = accounts.stream()
+                .map(account -> "Account Number: " + account.accountNumber)
+                .toArray(String[]::new);
 
-         dialog.add(new JLabel("Receiver Account:"));
-         JTextField receiverField = new JTextField();
-         dialog.add(receiverField);
+        String selectedAccount = (String) JOptionPane.showInputDialog(
+                this,
+                "Select an account for withdrawal:",
+                "Withdraw",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                accountOptions,
+                accountOptions[0]);
+
+        if (selectedAccount != null) {
+            int selectedIndex = java.util.Arrays.asList(accountOptions).indexOf(selectedAccount);
+            Account account = accounts.get(selectedIndex);
+
+            String amountStr = JOptionPane.showInputDialog(this,
+                    "Enter amount to withdraw:",
+                    "Withdraw Money",
+                    JOptionPane.PLAIN_MESSAGE);
+
+            if (amountStr != null && !amountStr.isEmpty()) {
+                try {
+                    double amount = Double.parseDouble(amountStr);
+                    account.withdraw(amount);
+
+                    String successMessage = String.format("""
+                Withdrawal Successful!
+                Account Number: %s
+                Amount Withdrawn: $%.2f
+                New Balance: $%.2f
+                """,
+                            account.accountNumber,
+                            amount,
+                            account.getBalance());
+
+                    JOptionPane.showMessageDialog(this,
+                            successMessage,
+                            "Withdrawal Successful",
+                            JOptionPane.INFORMATION_MESSAGE);
+
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(this,
+                            "Please enter a valid amount",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                } catch (IllegalArgumentException ex) {
+                    JOptionPane.showMessageDialog(this,
+                            ex.getMessage(),
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+    }
 
 
-         dialog.add(new JLabel("sender Account:"));
-         JTextField senderField = new JTextField();
-         dialog.add(senderField);
+    private void showTransferDialog () {
+        List<Account> accounts = client.getAccounts();
+        if (accounts.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "No account found for transfer",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        JDialog dialog = new JDialog(this, "Transfer Money", true);
+        dialog.setSize(300, 200);
+        dialog.setLayout(new GridLayout(4, 2, 10, 10));
+        dialog.setLocationRelativeTo(this);
+
+        dialog.add(new JLabel("Amount:"));
+        JTextField amountField = new JTextField();
+        dialog.add(amountField);
+
+        dialog.add(new JLabel("Receiver Account:"));
+        JTextField receiverField = new JTextField();
+        dialog.add(receiverField);
 
 
-         JButton transferButton = new JButton("Transfer");
-         transferButton.addActionListener(e -> {
-             try {
-                 double amount = Double.parseDouble(amountField.getText());
-                 String receiverAccount = receiverField.getText();
-                 // Account senderAccount = accounts.get(0);
-                 String senderAccount = senderField.getText();
-                 bank.transferMoney(client, senderAccount, receiverAccount, amount);
+        dialog.add(new JLabel("sender Account:"));
+        JTextField senderField = new JTextField();
+        dialog.add(senderField);
 
-                 dialog.dispose();
-                 JOptionPane.showMessageDialog(this, String.format("Successfully transferred $%.2f to %s", amount, receiverAccount));
-             } catch (NumberFormatException ex) {
-                 JOptionPane.showMessageDialog(dialog,
-                         "Please enter a valid amount",
-                         "Error",
-                         JOptionPane.ERROR_MESSAGE);
-             } catch (IllegalArgumentException ex) {
-                 JOptionPane.showMessageDialog(dialog,
-                         ex.getMessage(),
-                         "Error",
-                         JOptionPane.ERROR_MESSAGE);
-             }
-         });
 
-         dialog.add(transferButton);
-         dialog.setVisible(true);
-     }
+        JButton transferButton = new JButton("Transfer");
+        transferButton.addActionListener(e -> {
+            try {
+                double amount = Double.parseDouble(amountField.getText());
+                String receiverAccount = receiverField.getText();
+                // Account senderAccount = accounts.get(0);
+                String senderAccount = senderField.getText();
+                bank.transferMoney(client, senderAccount, receiverAccount, amount);
 
-//3shan yask 3al credit card
+                dialog.dispose();
+                JOptionPane.showMessageDialog(this, String.format("Successfully transferred $%.2f to %s", amount, receiverAccount));
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(dialog,
+                        "Please enter a valid amount",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            } catch (IllegalArgumentException ex) {
+                JOptionPane.showMessageDialog(dialog,
+                        ex.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        dialog.add(transferButton);
+        dialog.setVisible(true);
+    }
+
+//3shan y ask 3al credit card
 
     private void showCreditCardDialog () {
         JDialog dialog = new JDialog(this, "Credit Card", true);
@@ -525,25 +597,24 @@ public class ClientWindow extends JFrame {
     }
 
     // 3ashan adf3 bel credit card
-
     private void showpayCreditCardDialog() {
         JDialog dialog = new JDialog(this, "Credit Card Payment", true);
         dialog.setSize(300, 250);
         dialog.setLayout(new GridLayout(4, 1, 10, 10));
         dialog.setLocationRelativeTo(this);
 
-        // add lel account number w payment amount
+
         JLabel accountLabel = new JLabel("Enter Account Number:");
         JTextField accountField = new JTextField();
 
         JLabel amountLabel = new JLabel("Enter Payment Amount:");
         JTextField amountField = new JTextField();
 
-        //el pay button
         JButton payButton = new JButton("Pay");
         payButton.addActionListener(e -> {
             try {
-                //byshoof el account
+                // by check 3al account
+
                 String accountNumber = accountField.getText().trim();
                 if (accountNumber.isEmpty()) {
                     throw new IllegalArgumentException("Please enter an account number");
@@ -551,12 +622,16 @@ public class ClientWindow extends JFrame {
 
                 Account account = client.getAccount(accountNumber);
 
-                // byshoof el amount
+                // by check 3al amount
                 double amount = Double.parseDouble(amountField.getText());
-                client.earnLoyaltyPoints((int) Math.round(amount * 0.25));
+                if (amount <= 0) {
+                    throw new IllegalArgumentException("Payment amount must be greater than 0");
+                }
 
 
-                // by check 3al limit
+                int loyaltyPoints = (int) Math.round(amount * 0.25);
+
+                // by check credit limit
                 if (amount > 20000) {
                     throw new IllegalArgumentException(
                             String.format("Amount exceeds credit limit. Maximum: %.2f LE, Requested: %.2f LE",
@@ -564,18 +639,23 @@ public class ClientWindow extends JFrame {
                     );
                 }
 
-                // byt2ked el credit card mwgood wla la
+                // by check 3al credit card
                 if (account.getCreditCard() == null) {
                     throw new IllegalArgumentException("No credit card found for this account");
                 }
 
-                // bydf3 bel limit bs
+                // bydf3
                 account.getCreditCard().makePayment(amount);
 
+                client.earnLoyaltyPoints(loyaltyPoints);
+
+
                 JOptionPane.showMessageDialog(dialog,
-                        String.format("Payment of %.2f LE processed successfully!", amount),
+                        String.format("Payment of %.2f LE processed successfully!\nYou earned %d loyalty points.",
+                                amount, loyaltyPoints),
                         "Success",
                         JOptionPane.INFORMATION_MESSAGE);
+
                 dialog.dispose();
 
             } catch (NumberFormatException ex) {
@@ -594,7 +674,7 @@ public class ClientWindow extends JFrame {
         JButton closeButton = new JButton("Close");
         closeButton.addActionListener(e -> dialog.dispose());
 
-        // dialog le koll haga
+
         dialog.add(accountLabel);
         dialog.add(accountField);
         dialog.add(amountLabel);
@@ -664,13 +744,9 @@ public class ClientWindow extends JFrame {
         }
     }
 
-     private void logout () {
-         saveData();
-         new LoginWindow(bank).setVisible(true);
-         this.dispose();
-     }
+    private void logout () {
+        saveData();
+        new LoginWindow(bank).setVisible(true);
+        this.dispose();
+    }
 }
-
-
-
-
