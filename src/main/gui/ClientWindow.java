@@ -3,6 +3,7 @@ package gui;
 import javax.swing.*;
 
 import models.account.CreditCard;
+import models.account.SavingsAccount;
 import models.account.Transaction;
 import models.user.User;
 import services.Bank;
@@ -63,6 +64,7 @@ public class ClientWindow extends JFrame {
         JButton creditCardButton = new JButton("Ask for Credit Card");
         JButton paycreditCardButton = new JButton(" Pay With Credit Card");
         JButton discreditCardButton = new JButton(" Disable Credit Card");
+        JButton applyinterestButton = new JButton("  Apply Intrest ");
         JButton logoutButton = new JButton("Logout");
 
         // Add listeners to buttons
@@ -75,6 +77,7 @@ public class ClientWindow extends JFrame {
         creditCardButton.addActionListener(e -> showCreditCardDialog());
         paycreditCardButton.addActionListener(e -> showpayCreditCardDialog());
         discreditCardButton.addActionListener(e -> showdisCreditCardDialog());
+        applyinterestButton.addActionListener(e -> showapplyinterestDialog());
         logoutButton.addActionListener(e -> logout());
 
         // Add buttons to the window
@@ -84,6 +87,7 @@ public class ClientWindow extends JFrame {
         buttonPanel.add(depositButton);
         buttonPanel.add(withdrawButton);
         buttonPanel.add(transferButton);
+        buttonPanel.add(applyinterestButton);
         buttonPanel.add(creditCardButton);
         buttonPanel.add(paycreditCardButton);
         buttonPanel.add(discreditCardButton);
@@ -549,7 +553,65 @@ public class ClientWindow extends JFrame {
         dialog.add(transferButton);
         dialog.setVisible(true);
     }
+    private void showapplyinterestDialog() {
+        List<Account> savingsAccounts = client.getAccounts().stream()
+                .filter(account -> account instanceof SavingsAccount)
+                .collect(java.util.stream.Collectors.toList());
 
+        if (savingsAccounts.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "No savings accounts found!",
+                    "Apply Interest",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String[] accountOptions = savingsAccounts.stream()
+                .map(account -> "Account Number: " + account.accountNumber)
+                .toArray(String[]::new);
+
+        String selectedAccount = (String) JOptionPane.showInputDialog(
+                this,
+                "Select a savings account to apply interest:",
+                "Apply Interest",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                accountOptions,
+                accountOptions[0]);
+
+        if (selectedAccount != null) {
+            int selectedIndex = java.util.Arrays.asList(accountOptions).indexOf(selectedAccount);
+            SavingsAccount account = (SavingsAccount) savingsAccounts.get(selectedIndex);
+
+            try {
+                double oldBalance = account.getBalance();
+                account.applyInterest();
+                double newBalance = account.getBalance();
+                double interestEarned = newBalance - oldBalance;
+
+                String successMessage = String.format("""
+                Interest Applied Successfully!
+                Account Number: %s
+                Interest Earned: $%.2f
+                New Balance: $%.2f
+                """,
+                        account.accountNumber,
+                        interestEarned,
+                        newBalance);
+
+                JOptionPane.showMessageDialog(this,
+                        successMessage,
+                        "Interest Applied",
+                        JOptionPane.INFORMATION_MESSAGE);
+
+            } catch (IllegalArgumentException ex) {
+                JOptionPane.showMessageDialog(this,
+                        ex.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
 //3shan y ask 3al credit card
 
     private void showCreditCardDialog () {

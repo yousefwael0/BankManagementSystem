@@ -5,7 +5,7 @@
       {
         "accountNumber": "ACC001",
         "accountType": "SAVINGS",
-        "balance": 20000.0,
+        "balance": 20600.0,
         "status": "Active",
         "interestRate": 0.03,
         "clientId": "USR4",
