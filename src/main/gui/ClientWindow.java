@@ -470,6 +470,7 @@ public class ClientWindow extends JFrame {
          dialog.setVisible(true);
      }
 
+//3shan yask 3al credit card
 
     private void showCreditCardDialog () {
         JDialog dialog = new JDialog(this, "Credit Card", true);
@@ -483,7 +484,7 @@ public class ClientWindow extends JFrame {
         JButton requestButton = new JButton("Request Credit Card");
         JButton closeButton = new JButton("Close");
 
-        // Add components to the dialog
+
         dialog.add(accountLabel);
         dialog.add(accountNumberField);
         dialog.add(requestButton);
@@ -494,19 +495,20 @@ public class ClientWindow extends JFrame {
             String accountNumber = accountNumberField.getText().trim();
 
             try {
-                // Fetch the account using the client's getAccount method
+                // byakhod el account
                 Account account = client.getAccount(accountNumber);
 
-                // Call the askForCreditCard method on the account
+                // byask for el credit card
                 account.askForCreditCard();
 
-                // Show success message
+                // messege en heya eshtghlet
                 JOptionPane.showMessageDialog(dialog,
                         "Credit Card requested successfully!",
                         "Success",
                         JOptionPane.INFORMATION_MESSAGE);
             } catch (IllegalArgumentException ex) {
-                // Show error message
+
+                //messege en heya bayza
                 JOptionPane.showMessageDialog(dialog,
                         ex.getMessage(),
                         "Error",
@@ -522,25 +524,26 @@ public class ClientWindow extends JFrame {
         dialog.setVisible(true);
     }
 
+    // 3ashan adf3 bel credit card
+
     private void showpayCreditCardDialog() {
         JDialog dialog = new JDialog(this, "Credit Card Payment", true);
         dialog.setSize(300, 250);
         dialog.setLayout(new GridLayout(4, 1, 10, 10));
         dialog.setLocationRelativeTo(this);
 
-        // Add account number components
+        // add lel account number w payment amount
         JLabel accountLabel = new JLabel("Enter Account Number:");
         JTextField accountField = new JTextField();
 
-        // Add amount components
         JLabel amountLabel = new JLabel("Enter Payment Amount:");
         JTextField amountField = new JTextField();
 
-        // Add pay button
+        //el pay button
         JButton payButton = new JButton("Pay");
         payButton.addActionListener(e -> {
             try {
-                // Get the account using the input account number
+                //byshoof el account
                 String accountNumber = accountField.getText().trim();
                 if (accountNumber.isEmpty()) {
                     throw new IllegalArgumentException("Please enter an account number");
@@ -548,10 +551,12 @@ public class ClientWindow extends JFrame {
 
                 Account account = client.getAccount(accountNumber);
 
-                // Parse and validate amount
+                // byshoof el amount
                 double amount = Double.parseDouble(amountField.getText());
                 client.earnLoyaltyPoints((int) Math.round(amount * 0.25));
-                // Check if amount exceeds credit limit
+
+
+                // by check 3al limit
                 if (amount > 20000) {
                     throw new IllegalArgumentException(
                             String.format("Amount exceeds credit limit. Maximum: %.2f LE, Requested: %.2f LE",
@@ -559,12 +564,12 @@ public class ClientWindow extends JFrame {
                     );
                 }
 
-                // Check if credit card exists
+                // byt2ked el credit card mwgood wla la
                 if (account.getCreditCard() == null) {
                     throw new IllegalArgumentException("No credit card found for this account");
                 }
 
-                // Process the payment using only the credit limit
+                // bydf3 bel limit bs
                 account.getCreditCard().makePayment(amount);
 
                 JOptionPane.showMessageDialog(dialog,
@@ -589,7 +594,7 @@ public class ClientWindow extends JFrame {
         JButton closeButton = new JButton("Close");
         closeButton.addActionListener(e -> dialog.dispose());
 
-        // Add all components to dialog
+        // dialog le koll haga
         dialog.add(accountLabel);
         dialog.add(accountField);
         dialog.add(amountLabel);
@@ -600,7 +605,7 @@ public class ClientWindow extends JFrame {
         dialog.setVisible(true);
     }
 
-
+// disable  credit card
 
     private void showdisCreditCardDialog() {
         List<Account> accounts = client.getAccounts();
@@ -612,7 +617,7 @@ public class ClientWindow extends JFrame {
             return;
         }
 
-        // Select account
+        // 3shan a select account
         String[] accountOptions = accounts.stream()
                 .map(account -> account.accountNumber)
                 .toArray(String[]::new);
@@ -643,7 +648,7 @@ public class ClientWindow extends JFrame {
                 }
 
                 try {
-                    // Disable the card
+                    // 3shan a disbale el credit card
                     card.disableCard(card.cardNumber);
                     JOptionPane.showMessageDialog(this,
                             "Credit card has been successfully disabled",

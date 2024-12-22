@@ -8,7 +8,7 @@ public class Transaction {
     private String type;
     private double amount;
     public String clientId;
-    private static int counter = 1; // Counter made static to ensure it increments globally
+    private static int counter = 1;
 
     // Constructor
     public Transaction(LocalDateTime date, String type, double amount, String clientId) {
@@ -19,6 +19,7 @@ public class Transaction {
         this.setAmount(amount);
         this.clientId = clientId;
     }
+    // constructor def
     public Transaction() {
         this.transactionId = "T" + String.format("%03d", counter++);
         this.date = LocalDateTime.now();
@@ -27,7 +28,7 @@ public class Transaction {
         this.clientId = null;
     }
 
-    // Getter and Setter methods
+    // Getter Setter
     public String getTransactionId() {
         return transactionId;
     }
@@ -70,7 +71,7 @@ public class Transaction {
     }
     public static int getCounter() {return counter;}
 
-    // Method to get transaction details
+   //byban keda fel gui
     @Override
     public String toString() {
         return "Transaction Details:\n" +
