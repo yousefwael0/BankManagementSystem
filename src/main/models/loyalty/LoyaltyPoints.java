@@ -1,7 +1,5 @@
 package models.loyalty;
 
-import models.user.Client;
-
 public class LoyaltyPoints {
     private int points;
     private String clientId;

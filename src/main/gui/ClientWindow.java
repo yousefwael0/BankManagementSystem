@@ -1,23 +1,20 @@
 package gui;
 
-import javax.swing.*;
-
-import models.account.CreditCard;
-import models.account.SavingsAccount;
-import models.account.Transaction;
-import models.user.User;
-import services.Bank;
-import models.user.Client;
-import models.account.Account;
-import services.FileManager;
-
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import javax.swing.*;
+import models.account.Account;
+import models.account.CreditCard;
+import models.account.SavingsAccount;
+import models.account.Transaction;
+import models.user.Client;
+import services.Bank;
+import services.FileManager;
 
 public class ClientWindow extends JFrame {
     private Bank bank;

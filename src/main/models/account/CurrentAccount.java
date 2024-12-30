@@ -1,8 +1,6 @@
 package models.account;
 
 
-import models.user.Client;
-
 public class CurrentAccount extends Account {
     private static final double MINIMUM_BALANCE = 3000.0;
     private static final double PENALTY_FEE = 100.0;

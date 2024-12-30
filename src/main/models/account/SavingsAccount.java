@@ -1,6 +1,5 @@
 package models.account;
 
-import models.user.Client;
 
 public class SavingsAccount extends Account {
     public SavingsAccount(double balance, double interestRate, String clientId)

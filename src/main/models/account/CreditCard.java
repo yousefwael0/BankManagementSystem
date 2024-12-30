@@ -10,7 +10,7 @@ public class CreditCard {
 
     public CreditCard(String accountNumber, String clientId, boolean isActive) {
         this.cardNumber = "CC" + String.format("%03d", counter++);
-        if (accountNumber.isEmpty()|| clientId==null) {
+        if (accountNumber.isEmpty() || clientId==null) {
             throw new IllegalArgumentException("AccountNumber and Client cannot be empty");
         }
         this.accountNumber = accountNumber;

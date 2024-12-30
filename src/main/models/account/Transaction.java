@@ -71,7 +71,7 @@ public class Transaction {
     }
     public static int getCounter() {return counter;}
 
-   //byban keda fel gui
+
     @Override
     public String toString() {
         return "Transaction Details:\n" +

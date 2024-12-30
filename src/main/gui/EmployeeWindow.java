@@ -1,23 +1,21 @@
 package gui;
-import javax.swing.*;
-
-import models.account.Account;
-import models.account.CurrentAccount;
-import models.account.SavingsAccount;
-import services.Bank;
-import models.user.Employee;
-import models.user.Client;
-import services.FileManager;
-
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.*;
 import javax.swing.text.AbstractDocument;
-import javax.swing.text.DocumentFilter;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
+import models.account.Account;
+import models.account.CurrentAccount;
+import models.account.SavingsAccount;
+import models.user.Client;
+import models.user.Employee;
+import services.Bank;
+import services.FileManager;
 
 
 public class EmployeeWindow extends JFrame {
