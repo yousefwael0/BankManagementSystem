@@ -1,0 +1,286 @@
+[
+  {
+    "phoneNumber": "01234567890",
+    "accounts": [
+      {
+        "accountNumber": "ACC001",
+        "accountType": "SAVINGS",
+        "balance": 20600.0,
+        "status": "Active",
+        "interestRate": 0.03,
+        "clientId": "USR4",
+        "creditCard": {
+          "cardNumber": "CC001",
+          "limit": 0.0,
+          "isActive": true,
+          "accountNumber": "ACC001",
+          "clientId": "USR4"
+        }
+      },
+      {
+        "accountNumber": "ACC002",
+        "accountType": "CURRENT",
+        "balance": 1900.0,
+        "status": "Active",
+        "interestRate": 0.0,
+        "clientId": "USR4",
+        "creditCard": {
+          "cardNumber": "CC002",
+          "limit": 0.0,
+          "isActive": false,
+          "accountNumber": "ACC002",
+          "clientId": "USR4"
+        }
+      }
+    ],
+    "loyaltyPoints": {
+      "points": 25931
+    },
+    "transactions": [
+      {
+        "transactionId": "T001",
+        "date": "2024-12-12T10:30:00",
+        "type": "DEPOSIT",
+        "amount": 500.0,
+        "clientId": "USR4"
+      },
+      {
+        "transactionId": "T002",
+        "date": "2024-12-13T14:00:00",
+        "type": "WITHDRAWAL",
+        "amount": 200.0,
+        "clientId": "USR4"
+      },
+      {
+        "transactionId": "T008",
+        "date": "2024-12-22T02:49:48.3274026",
+        "type": "TRANSFER",
+        "amount": 10000.0,
+        "clientId": "USR4"
+      }
+    ],
+    "userId": "USR4",
+    "firstName": "Alice",
+    "lastName": "Johnson",
+    "username": "alicej",
+    "password": "password123"
+  },
+  {
+    "phoneNumber": "01234567891",
+    "accounts": [
+      {
+        "accountNumber": "ACC003",
+        "accountType": "CURRENT",
+        "balance": 10000.0,
+        "status": "Active",
+        "interestRate": 0.0,
+        "clientId": "USR5"
+      }
+    ],
+    "loyaltyPoints": {
+      "points": 50
+    },
+    "transactions": [
+      {
+        "transactionId": "T003",
+        "date": "2024-12-14T09:00:00",
+        "type": "TRANSFER",
+        "amount": 1000.0,
+        "clientId": "USR5"
+      }
+    ],
+    "userId": "USR5",
+    "firstName": "Bob",
+    "lastName": "Smith",
+    "username": "bobsmith",
+    "password": "mypassword"
+  },
+  {
+    "phoneNumber": "01234567892",
+    "accounts": [
+      {
+        "accountNumber": "ACC004",
+        "accountType": "SAVINGS",
+        "balance": 3000.0,
+        "status": "Active",
+        "interestRate": 0.04,
+        "clientId": "USR6"
+      }
+    ],
+    "loyaltyPoints": {
+      "points": 75
+    },
+    "transactions": [
+      {
+        "transactionId": "T004",
+        "date": "2024-12-15T11:00:00",
+        "type": "DEPOSIT",
+        "amount": 300.0,
+        "clientId": "USR6"
+      }
+    ],
+    "userId": "USR6",
+    "firstName": "Charlie",
+    "lastName": "Green",
+    "username": "charlieg",
+    "password": "green123"
+  },
+  {
+    "phoneNumber": "01234567893",
+    "accounts": [
+      {
+        "accountNumber": "ACC005",
+        "accountType": "CURRENT",
+        "balance": 15000.0,
+        "status": "Active",
+        "interestRate": 0.0,
+        "clientId": "USR7"
+      },
+      {
+        "accountNumber": "ACC006",
+        "accountType": "SAVINGS",
+        "balance": 8000.0,
+        "status": "Active",
+        "interestRate": 0.02,
+        "clientId": "USR7"
+      }
+    ],
+    "loyaltyPoints": {
+      "points": 200
+    },
+    "transactions": [
+      {
+        "transactionId": "T005",
+        "date": "2024-12-16T13:30:00",
+        "type": "TRANSFER",
+        "amount": 800.0,
+        "clientId": "USR7"
+      }
+    ],
+    "userId": "USR7",
+    "firstName": "Diana",
+    "lastName": "Prince",
+    "username": "dianap",
+    "password": "wonder123"
+  },
+  {
+    "phoneNumber": "01234567894",
+    "accounts": [
+      {
+        "accountNumber": "ACC007",
+        "accountType": "SAVINGS",
+        "balance": 7000.0,
+        "status": "Active",
+        "interestRate": 0.03,
+        "clientId": "USR8"
+      }
+    ],
+    "loyaltyPoints": {
+      "points": 180
+    },
+    "transactions": [
+      {
+        "transactionId": "T006",
+        "date": "2024-12-17T15:45:00",
+        "type": "WITHDRAWAL",
+        "amount": 700.0,
+        "clientId": "USR8"
+      }
+    ],
+    "userId": "USR8",
+    "firstName": "Eve",
+    "lastName": "Adams",
+    "username": "evea",
+    "password": "evepass789"
+  },
+  {
+    "phoneNumber": "01234567895",
+    "accounts": [
+      {
+        "accountNumber": "ACC008",
+        "accountType": "CURRENT",
+        "balance": 4000.0,
+        "status": "Active",
+        "interestRate": 0.0,
+        "clientId": "USR9"
+      }
+    ],
+    "loyaltyPoints": {
+      "points": 90
+    },
+    "transactions": [
+      {
+        "transactionId": "T007",
+        "date": "2024-12-18T10:00:00",
+        "type": "DEPOSIT",
+        "amount": 500.0,
+        "clientId": "USR9"
+      }
+    ],
+    "userId": "USR9",
+    "firstName": "Frank",
+    "lastName": "Brown",
+    "username": "frankb",
+    "password": "brown123"
+  },
+  {
+    "phoneNumber": "01005678920",
+    "accounts": [
+      {
+        "accountNumber": "ACC010",
+        "accountType": "SAVINGS",
+        "balance": 2211.0,
+        "status": "Active",
+        "interestRate": 1.0,
+        "clientId": "USR012",
+        "creditCard": {
+          "cardNumber": "CC003",
+          "limit": 0.0,
+          "isActive": false,
+          "accountNumber": "ACC010",
+          "clientId": "USR012"
+        }
+      },
+      {
+        "accountNumber": "ACC011",
+        "accountType": "SAVINGS",
+        "balance": 1000.0,
+        "status": "Active",
+        "interestRate": 1.0,
+        "clientId": "USR012"
+      }
+    ],
+    "loyaltyPoints": {
+      "points": 5000,
+      "clientId": "USR012"
+    },
+    "transactions": [
+      {
+        "transactionId": "T009",
+        "date": "2024-12-22T14:15:45.605074",
+        "type": "TRANSFER",
+        "amount": 2000.0,
+        "clientId": "USR012"
+      },
+      {
+        "transactionId": "T010",
+        "date": "2024-12-22T14:36:14.314973",
+        "type": "WITHDRAW",
+        "amount": 40.0,
+        "clientId": "USR012"
+      },
+      {
+        "transactionId": "T011",
+        "date": "2024-12-22T14:36:19.961286",
+        "type": "DEPOSIT",
+        "amount": 40.0,
+        "clientId": "USR012"
+      }
+    ],
+    "userId": "USR012",
+    "firstName": "Karim",
+    "lastName": "Amr",
+    "username": "karim",
+    "password": "amr12345"
+  }
+]

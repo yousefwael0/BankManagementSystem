@@ -1,0 +1,54 @@
+[
+  {
+    "isActive": true,
+    "address": "Obout City, Cairo, Egypt",
+    "position": "Manager",
+    "graduatedCollege": "Cairo University",
+    "totalGrade": "Excellent",
+    "yearOfGraduation": 2015,
+    "userId": "USR1",
+    "firstName": "Yousef",
+    "lastName": "Wael",
+    "username": "yousef",
+    "password": "wael"
+  },
+  {
+    "isActive": true,
+    "address": "456 Elm St, Alexandria, Egypt",
+    "position": "Cashier",
+    "graduatedCollege": "Alexandria University",
+    "totalGrade": "Very Good",
+    "yearOfGraduation": 2018,
+    "userId": "USR2",
+    "firstName": "Mostafa",
+    "lastName": "Hagras",
+    "username": "mostafa",
+    "password": "hagras"
+  },
+  {
+    "isActive": false,
+    "address": "789 Oak St, Giza, Egypt",
+    "position": "Teller",
+    "graduatedCollege": "Giza University",
+    "totalGrade": "Good",
+    "yearOfGraduation": 2020,
+    "userId": "USR3",
+    "firstName": "Karim",
+    "lastName": "Amr",
+    "username": "karim",
+    "password": "amr"
+  },
+  {
+    "isActive": true,
+    "address": "Madinaty",
+    "position": "HR",
+    "graduatedCollege": "ASU",
+    "totalGrade": "Excelent",
+    "yearOfGraduation": 2020,
+    "userId": "USR011",
+    "firstName": "Nour",
+    "lastName": "Hany",
+    "username": "nour",
+    "password": "hany1234"
+  }
+]
